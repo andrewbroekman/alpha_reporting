@@ -64,6 +64,16 @@
 		</roles>
 		<timezone>Africa/Johannesburg</timezone>
 	</developer>
+
+    <developer>
+        <id>14004489</id>
+        <name>Unarine Rambani</name>
+        <email>u14004489@tuks.co.za</email>
+        <roles>
+            <role>Developer</role>
+        </roles>
+        <timezone>Africa/Johannesburg</timezone>
+    </developer>
     </developers>
 
     <!-- Repository definitions -->
