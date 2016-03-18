@@ -35,6 +35,17 @@
             </roles>
             <timezone>Africa/Johannesburg</timezone>
         </developer>
+        
+        <developer>
+            <id>14211582</id>
+            <name>Tshepo Malesela</name>
+            <email>u14211582@tuks.co.za</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+            <timezone>Africa/Johannesburg</timezone>
+        </developer>
+        
 	<developer>
 		<id>13040686</id>
 		<name>Maluleki Nyuswa</name>
