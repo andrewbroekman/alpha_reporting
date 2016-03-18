@@ -35,6 +35,15 @@
             </roles>
             <timezone>Africa/Johannesburg</timezone>
         </developer>
+		<developer>
+			<id>13040686</id>
+			<name>Maluleki Nyuswa</name>
+			<email>u13040686@tuks.co.za</email>
+			<roles>
+				<role>Developer</role>
+			</roles>
+			<timezone>Africa/Johannesburg</timezone>
+		</developer>
     </developers>
 
     <!-- Repository definitions -->
