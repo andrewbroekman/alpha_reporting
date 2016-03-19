@@ -5,15 +5,20 @@
     <parent>
         <artifactId>parent</artifactId>
         <groupId>com.codinginfinity.research</groupId>
-        <version>1.0</version>
+        <version>1.0-SNAPSHOT</version>
     </parent>
 
     <!-- Basic project settings -->
     <artifactId>reporting</artifactId>
-    <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
+
     <!-- Metadata regarding the project -->
     <name>UP CS Research Management System - Reporting Module</name>
+    <inceptionYear>2016</inceptionYear>
+    <organization>
+        <name>University of Pretoria</name>
+        <url>http://www.up.ac.za</url>
+    </organization>
 
     <developers>
         <developer>
@@ -26,6 +31,7 @@
             </roles>
             <timezone>Africa/Johannesburg</timezone>
         </developer>
+
         <developer>
             <id>12026973</id>
             <name>Marc Antel</name>
@@ -46,34 +52,35 @@
             <timezone>Africa/Johannesburg</timezone>
         </developer>
         
-	<developer>
-		<id>13040686</id>
-		<name>Maluleki Nyuswa</name>
-		<email>u13040686@tuks.co.za</email>
-		<roles>
-			<role>Developer</role>
-		</roles>
-		<timezone>Africa/Johannesburg</timezone>
-	</developer>
-	<developer>
-		<id>12163262</id>
-		<name>Nsovo Baloyi</name>
-		<email>u12163262@tuks.co.za</email>
-		<roles>
-			<role>Developer</role>
-		</roles>
-		<timezone>Africa/Johannesburg</timezone>
-	</developer>
+    	<developer>
+    		<id>13040686</id>
+    		<name>Maluleki Nyuswa</name>
+    		<email>u13040686@tuks.co.za</email>
+    		<roles>
+    			<role>Developer</role>
+    		</roles>
+    		<timezone>Africa/Johannesburg</timezone>
+    	</developer>
+    
+    	<developer>
+    		<id>12163262</id>
+    		<name>Nsovo Baloyi</name>
+    		<email>u12163262@tuks.co.za</email>
+    		<roles>
+    			<role>Developer</role>
+    		</roles>
+    		<timezone>Africa/Johannesburg</timezone>
+    	</developer>
 
-    <developer>
-        <id>14004489</id>
-        <name>Unarine Rambani</name>
-        <email>u14004489@tuks.co.za</email>
-        <roles>
-            <role>Developer</role>
-        </roles>
-        <timezone>Africa/Johannesburg</timezone>
-    </developer>
+        <developer>
+            <id>14004489</id>
+            <name>Unarine Rambani</name>
+            <email>u14004489@tuks.co.za</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+            <timezone>Africa/Johannesburg</timezone>
+        </developer>
     </developers>
 
     <!-- Repository definitions -->
