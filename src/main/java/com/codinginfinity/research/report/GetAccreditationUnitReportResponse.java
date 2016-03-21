@@ -8,6 +8,7 @@
 *	The returned report will deal specifically with the accreditation units of people, groups, and publications.
 */
 
+package com.codinginfinity.research.report;
 public class GetAccreditationUnitReportResponse {
 
 }
