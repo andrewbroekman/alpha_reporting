@@ -8,6 +8,7 @@
 *	The report returned deals specifically with the progress status of publications.
 */
 
+package com.codinginfinity.research.report;
 public class GetProgressReportResponse {
 
 }
