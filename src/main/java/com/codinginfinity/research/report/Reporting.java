@@ -15,17 +15,15 @@ public interface Reporting {
     /**
      * Service Contract Contract that allows a user to request a report on the accreditation units of Publications
      * @param getAccreditationUnitReportRequest An object that will specify exactly what has been requested
-     * @return Object that will contain the information requested
-     * @todo Define the type of Object that will be received and returned
+     * @return GetAccreditationUnitReportResponse that will contain the information requested
      */
-    public Object getAccreditationUnitReport(Object getAccreditationUnitReportRequest);
+    public GetAccreditationUnitReportResponse getAccreditationUnitReport(GetAccreditationUnitReportRequest getAccreditationUnitReportRequest);
     
     /**
      * Service Contract that allows a user to request a report on the progress of Publications
      * @param getProgressReportRequest An object that will specify exactly what has been requested
-     * @return Object that will contain the information requested
-     * @todo Define the type of Object that will be received and returned
+     * @return GetProgressReportResponse that will contain the information requested
      */
-    public Object getProgressReport(Object getProgressReportRequest);
+    public GetProgressReportResponse getProgressReport(GetProgressReportRequest getProgressReportRequest);
     
 }
