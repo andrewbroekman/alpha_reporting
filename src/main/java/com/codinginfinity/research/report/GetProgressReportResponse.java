@@ -9,6 +9,36 @@
 */
 
 package com.codinginfinity.research.report;
-public class GetProgressReportResponse {
+import org.w3c.dom.Document;
 
+public class GetProgressReportResponse implements Response{
+    
+    /**
+     * Assigns the SVG file
+     * @param svg
+     */
+    public GetProgressReportResponse(Document svg/*, PDF pdf, XML xml*/) {
+        super();
+        this.svg = svg;
+        //this.pdf = pdf;
+       // this.xml = xml;
+    }    
+   
+    public Document getSVG(){
+        return svg;        
+    }
+    /* public PDF getPDF(){
+        return pdf;        
+    }
+    
+    public XML getXML(){
+        return xml;        
+    }*/
+    
+    private final Document svg;
+    //private PDF pdf;
+    //private XML xml;
+    
+    
+    
 }
