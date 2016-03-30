@@ -1,4 +1,9 @@
-
+/**
+*	@file InvalidRequestException.java
+*       @class InvalidRequestException
+*	@author COS301 Reporting Alpha Team
+*	@brief An exception class thrown by Reporting
+*/
 package com.codinginfinity.research.report;
 public class InvalidRequestException  extends Exception{
     
