@@ -57,14 +57,14 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[Country]]></text>
+				<text><![CDATA[Progress]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="3" width="136" height="15" uuid="d6420636-98ee-4110-b27b-d58168f6de51"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[Name]]></text>
+				<text><![CDATA[Title]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
