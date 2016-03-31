@@ -106,10 +106,20 @@
 		<groupId>net.sf.jasperreports</groupId>
 		<artifactId>jasperreports-fonts</artifactId>
 	</dependency>
+        
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>batik-svggen</artifactId>
+            <version>1.8</version>
+        </dependency>
+
 	<dependency>
-            <groupId>org.apache.batik</groupId>
-            <artifactId>batik</artifactId>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>batik-dom</artifactId>
+            <version>1.8</version>
         </dependency>
    </dependencies>
+   
+
 
 </project>
