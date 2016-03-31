@@ -9,6 +9,13 @@
 */
 
 package com.codinginfinity.research.report;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.w3c.dom.Document;
 
@@ -21,18 +28,60 @@ public class GetProgressReportResponse implements Response{
     public GetProgressReportResponse(JasperPrint print) {
         super();
         this.print = print;
-    }    
-   
-   /* public Document getSVG(){
-        return svg;        
-    }
-     public PDF getPDF(){
-        return pdf;        
     }
     
-    public XML getXML(){
-        return xml;        
-    }*/
+    /**
+     * 
+     */
+    public void getSVG(){
+        //return svg;        
+    }
+    
+    /**
+     * 
+     */
+    public void getPDF(){
+        try{ 
+            
+            JasperExportManager.exportReportToPdfFile(print, "reporting.pdf");
+           
+        }
+        catch( JRException e){
+            System.err.println( "JRException " + e);
+        }
+        
+        //return pdf;        
+    }
+    
+    /**
+     * 
+     */
+    public void getXML(){
+        try{ 
+            JasperExportManager.exportReportToXmlFile(print, "reporting.xml", true);
+            
+        }
+        catch( JRException e){
+            System.err.println( "JRException " + e);
+        }
+        
+       
+        //return xml;        
+    }
+    
+    /**
+     * 
+     */
+    public void getHTML(){
+        try{ 
+            JasperExportManager.exportReportToHtmlFile(print, "reporting.xml");
+            
+        }
+        catch( JRException e){
+            System.err.println( "JRException " + e);
+        }
+        //return HtmlFile
+    }
     
     private final JasperPrint print;    
 }
