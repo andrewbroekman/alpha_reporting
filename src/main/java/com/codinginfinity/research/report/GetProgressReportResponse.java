@@ -9,25 +9,24 @@
 */
 
 package com.codinginfinity.research.report;
+import net.sf.jasperreports.engine.JasperPrint;
 import org.w3c.dom.Document;
 
 public class GetProgressReportResponse implements Response{
     
     /**
-     * Assigns the SVG file
-     * @param svg
+     * Assigns the JasperPrint file. This file allows us to generate XML, PDF and SVG formats of the report
+     * @param print
      */
-    public GetProgressReportResponse(Document svg/*, PDF pdf, XML xml*/) {
+    public GetProgressReportResponse(JasperPrint print) {
         super();
-        this.svg = svg;
-        //this.pdf = pdf;
-       // this.xml = xml;
+        this.print = print;
     }    
    
-    public Document getSVG(){
+   /* public Document getSVG(){
         return svg;        
     }
-    /* public PDF getPDF(){
+     public PDF getPDF(){
         return pdf;        
     }
     
@@ -35,10 +34,5 @@ public class GetProgressReportResponse implements Response{
         return xml;        
     }*/
     
-    private final Document svg;
-    //private PDF pdf;
-    //private XML xml;
-    
-    
-    
+    private final JasperPrint print;    
 }
