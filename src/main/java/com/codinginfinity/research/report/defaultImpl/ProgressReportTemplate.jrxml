@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
 <!-- 2016-03-31T11:46:50 -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="jasper_report_template" language="groovy" pageWidth="842" pageHeight="595" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="3e20851d-b280-46ba-aa05-79a95e38c937">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="jasper_report_template" language="java" pageWidth="842" pageHeight="595" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="3e20851d-b280-46ba-aa05-79a95e38c937">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<style name="Title" fontName="Times New Roman" fontSize="50" isBold="true"/>
 	<style name="SubTitle" forecolor="#736343" fontName="Arial" fontSize="18"/>
@@ -10,17 +10,17 @@
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
-	<field name="country" class="java.lang.String">
-		<fieldDescription><![CDATA[country]]></fieldDescription>
+	<field name="progress" class="java.lang.Integer">
+		<fieldDescription><![CDATA[progress]]></fieldDescription>
 	</field>
-	<field name="name" class="java.lang.String">
-		<fieldDescription><![CDATA[name]]></fieldDescription>
+	<field name="title" class="java.lang.String">
+		<fieldDescription><![CDATA[title]]></fieldDescription>
 	</field>
 	<title>
 		<band height="136" splitType="Stretch">
 			<image>
 				<reportElement x="0" y="0" width="180" height="132" uuid="7836ad5d-91c8-428c-87ca-a1a8b2b8b137"/>
-				<imageExpression><![CDATA["logo.jpg"]]></imageExpression>
+				<imageExpression><![CDATA["C:\\Users\\Nsovo\\Documents\\Nsovo Baloyi\\School Work\\2016\\COS 301\\Mini Project\\Phase 3\\alpha_reporting\\src\\main\\java\\com\\codinginfinity\\research\\report\\defaultImpl\\logo.jpg"]]></imageExpression>
 			</image>
 			<staticText>
 				<reportElement style="Title" x="270" y="0" width="380" height="62" uuid="a080d2ca-6207-4d8e-87c9-d3b61fb495a9"/>
@@ -82,12 +82,12 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{country}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{progress}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="0" y="0" width="136" height="15" uuid="f447e442-f071-4037-b0ee-58d0c663ae6c"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{title}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
