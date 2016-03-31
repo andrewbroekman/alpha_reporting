@@ -12,11 +12,18 @@ package com.codinginfinity.research.report;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.export.JRGraphics2DExporter;
+import net.sf.jasperreports.engine.export.JRGraphics2DExporterParameter;
+import org.apache.batik.dom.GenericDOMImplementation;
+import org.apache.batik.svggen.SVGGraphics2D;
+import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 
 public class GetProgressReportResponse implements Response{
@@ -34,6 +41,21 @@ public class GetProgressReportResponse implements Response{
      * 
      */
     public void getSVG(){
+        try{
+            DOMImplementation domImpl = GenericDOMImplementation.getDOMImplementation();
+            Document document = domImpl.createDocument(null, "svg", null);
+            SVGGraphics2D grx = new SVGGraphics2D(document);
+
+            JRGraphics2DExporter exporter = new JRGraphics2DExporter();
+            exporter.setParameter(JRExporterParameter.JASPER_PRINT, print);
+            exporter.setParameter(JRGraphics2DExporterParameter.GRAPHICS_2D, grx);
+            exporter.setParameter(JRExporterParameter.PAGE_INDEX, new Integer(0));
+            exporter.exportReport();
+
+            grx.stream(new FileWriter(new File("reporting.svg")), true);
+        }
+        catch(JRException e){}
+        catch(IOException e){}
         //return svg;        
     }
     
