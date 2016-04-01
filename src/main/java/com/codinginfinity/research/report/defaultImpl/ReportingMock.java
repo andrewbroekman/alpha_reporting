@@ -1,13 +1,13 @@
 /**
-*	@file ReportingMock.java
-*       @class Reporting
-*	@author COS301 Reporting Alpha Team
-*	@version 1.0 alpha
-*	@brief A mock object that mocks the generated reports
-*	@section Description
-* 	This class will mock the two service contracts provided by Reporting interface.
-*
-*/
+ *	@file ReportingMock.java
+ *       @class Reporting
+ *	@author COS301 Reporting Alpha Team
+ *	@version 1.0 alpha
+ *	@brief A mock object that mocks the generated reports
+ *	@section Description
+ * 	This class will mock the two service contracts provided by Reporting interface.
+ *
+ */
 package com.codinginfinity.research.report.defaultImpl;
 
 import com.codinginfinity.research.report.GetAccreditationUnitReportRequest;
@@ -16,10 +16,8 @@ import com.codinginfinity.research.report.GetProgressReportRequest;
 import com.codinginfinity.research.report.GetProgressReportResponse;
 import com.codinginfinity.research.report.InvalidRequestException;
 import com.codinginfinity.research.report.Reporting;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -34,17 +32,54 @@ import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
 
 public class ReportingMock implements Reporting{
-    
+
+    private GetAccreditationUnitReportResponse accreditationUnitResponse;
     /**
-     * 
+     *
      * @param getAccreditationUnitReportRequest
      * @return GetAccreditationUnitReportResponse
      */
     @Override
     public GetAccreditationUnitReportResponse getAccreditationUnitReport(GetAccreditationUnitReportRequest getAccreditationUnitReportRequest) throws InvalidRequestException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if(buildAccreditationUnitReportResponse())
+            return accreditationUnitResponse;
+        else
+            throw new InvalidRequestException();    }
+
+    /**
+     * Builds the Accreditation Unit report from the specified template file
+     * @return
+     */
+    public boolean buildAccreditationUnitReportResponse(){
+        JasperPrint jasperPrint;
+        try{
+            InputStream input = new FileInputStream(new File("AccreditationUnitReportTemplate.jrxml"));
+            JasperDesign design = JRXmlLoader.load(input);
+            JasperReport report = JasperCompileManager.compileReport(design);
+            Map parameters = new HashMap();
+            parameters.put("DETAILS", "Progress report from DATE to DATE");
+
+            //Connection conn = Database.getConnection();
+            PublicationList pub = new PublicationList();
+            ArrayList<Publication> dataList = pub.getPublicationList();
+            JRBeanCollectionDataSource ColDataSource = new JRBeanCollectionDataSource(dataList);
+            jasperPrint = JasperFillManager.fillReport(report, parameters, ColDataSource);
+
+        }
+        catch(FileNotFoundException e){
+
+            return false;
+
+        }
+        catch( JRException e){
+            return false;
+        }
+
+        accreditationUnitResponse = new GetAccreditationUnitReportResponse(jasperPrint);
+        return true;
     }
-    
+
+
     /**
      * Implementation of the getProgressReport service contract
      * @param request
@@ -55,56 +90,56 @@ public class ReportingMock implements Reporting{
     public GetProgressReportResponse getProgressReport(GetProgressReportRequest request) throws InvalidRequestException{
         //Validate request
         //if(request.getEntity() == null  && request.getPublicationType == null)
-            //throw new InvalidRequestException();  
-        
+        //throw new InvalidRequestException();
+
         if(buildProgressReport())
             return progressResponse;
-        else 
+        else
             throw new InvalidRequestException();
     }
-    
+
     /**
      * Builds the progress report from the specified template file
-     * @return 
+     * @return
      */
-    public boolean buildProgressReport(){   
+    public boolean buildProgressReport(){
         JasperPrint jasperPrint;
         try{
             InputStream input = new FileInputStream(new File("ProgressReportTemplate.jrxml"));
             JasperDesign design = JRXmlLoader.load(input);
-            JasperReport report = JasperCompileManager.compileReport(design);  
+            JasperReport report = JasperCompileManager.compileReport(design);
             Map parameters = new HashMap();
             parameters.put("DETAILS", "Progress report from DATE to DATE");
-               
-            //Connection conn = Database.getConnection(); 
+
+            //Connection conn = Database.getConnection();
             PublicationList pub = new PublicationList();
             ArrayList<Publication> dataList = pub.getPublicationList();
             JRBeanCollectionDataSource ColDataSource = new JRBeanCollectionDataSource(dataList);
             jasperPrint = JasperFillManager.fillReport(report, parameters, ColDataSource);
-             
+
         }catch(FileNotFoundException e){
-            
+
             return false;
-        
+
         }
         catch( JRException e){
             return false;
         }
-        
+
         progressResponse = new GetProgressReportResponse(jasperPrint);
         return true;
     }
-    
-     /**
+
+    /**
      * Sets the response object. Allows tester to change response object at will
-     * @param res 
+     * @param res
      */
     public void setProgressReportRes(GetProgressReportResponse res){
         this.progressResponse = res;
     }
-       
-    private GetProgressReportResponse progressResponse;  
-    
+
+    private GetProgressReportResponse progressResponse;
+
     class PublicationList {
         public ArrayList<Publication> getPublicationList() {
             ArrayList<Publication> publicationList = new ArrayList<Publication>();
@@ -121,56 +156,56 @@ public class ReportingMock implements Reporting{
          * This method returns a Publication object,with title and progress set in it.
          */
         private Publication produce(String title, int progress) {
-           Publication publication = new Publication();
-           publication.setTitle(title);
-           publication.setProgress(progress);
-           return publication;
+            Publication publication = new Publication();
+            publication.setTitle(title);
+            publication.setProgress(progress);
+            return publication;
         }
     }
-    
+
     //@Entity(name = "PUBLICATION")
     class Publication /*implements Serializable*/ {
-       /* @Id
-	@Column(name = "PUB_ID", nullable = false)
-	@GeneratedValue(strategy = GenerationType.AUTO)*/
-	private int publicationID;       
+        /* @Id
+     @Column(name = "PUB_ID", nullable = false)
+     @GeneratedValue(strategy = GenerationType.AUTO)*/
+        private int publicationID;
 
-	//@Column(name = "DATE")
-	private Date date;
-        
-//        @Column(name = "TITLE")
+        //@Column(name = "DATE")
+        private Date date;
+
+        //        @Column(name = "TITLE")
         private String title;
-        
-  //      @Column(name = "PROGRESS")
+
+        //      @Column(name = "PROGRESS")
         private int progress;
 
-	
-	public Date getDate() {
-		return date;
-	}
 
-	public void setDate(Date d) {
-		this.date = d;
-	}
-        
-	public int getPublicationID() {
-		return publicationID;
-	}       
+        public Date getDate() {
+            return date;
+        }
+
+        public void setDate(Date d) {
+            this.date = d;
+        }
+
+        public int getPublicationID() {
+            return publicationID;
+        }
 
         public String getTitle() {
-           return title;
+            return title;
         }
 
         public void setTitle(String title) {
-           this.title = title;
+            this.title = title;
         }
 
         public int getProgress() {
-           return progress;
+            return progress;
         }
 
         public void setProgress(int progress) {
-           this.progress = progress;
+            this.progress = progress;
         }
     }
 }
