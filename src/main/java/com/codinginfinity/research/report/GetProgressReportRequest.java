@@ -9,7 +9,30 @@
 */
 
 package com.codinginfinity.research.report;
-public class GetProgressReportRequest {
+public class GetProgressReportRequest implements Request{
 	Entity requestedEntity;
 	PublicationType requestedPublicationType;
+        
+        public GetProgressReportRequest(Entity entity, PublicationType type) {
+            super();
+            this.requestedEntity = entity;
+            this.requestedPublicationType = type;
+        }
+        
+        public Entity getEntity() {
+            return requestedEntity;
+        }
+        
+        public void setEntity(Entity entity) {
+            this.requestedEntity = entity;
+        }
+        
+        public PublicationType getPublicationType() {
+            return requestedPublicationType;
+        }
+        
+        public void setPublicationType(PublicationType type) {
+            this.requestedPublicationType = type;
+        }
+
 }
