@@ -10,69 +10,90 @@
 
 package com.codinginfinity.research.report;
 
-import net.sf.jasperreports.engine.*;
-import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRExporterParameter;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.export.JRGraphics2DExporter;
 import net.sf.jasperreports.engine.export.JRGraphics2DExporterParameter;
-import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import org.apache.batik.dom.GenericDOMImplementation;
 import org.apache.batik.svggen.SVGGraphics2D;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 
-import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
-public class GetAccreditationUnitReportResponse {
+public class GetAccreditationUnitReportResponse implements Response{
 
-
-
-    public GetAccreditationUnitReportResponse(Document svg/*, PDF pdf, XML xml*/) throws JRException, IOException{
+    private final JasperPrint print;
+    /**
+     * Assigns the JasperPrint file. This file allows us to generate XML, PDF and SVG formats of the report
+     * @param print
+     */
+    public GetAccreditationUnitReportResponse(JasperPrint print){
         super();
-        this.svg = svg;
-
-        InputStream inputStream=new FileInputStream((new File("src/main/java/com/codinginfinity/research/report/AccreditationUnitReport.jrxml")));
-        JasperDesign jasperDesign= JRXmlLoader.load(inputStream);
-        JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);
-
-        Map<String,String> map = new HashMap<String,String>();
-        map.put("jasper report","Accreditation Unit");
-        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, null);
-
-        OutputStream outputStream=new FileOutputStream(new File("src/main/java/com/codinginfinity/research/report/report.pdf"));
-        JasperExportManager.exportReportToPdfStream(jasperPrint,outputStream);
-        System.out.println("done");
-
-        DOMImplementation domImpl = GenericDOMImplementation.getDOMImplementation();
-        svg = domImpl.createDocument(null, "svg", null);
-        SVGGraphics2D grx = new SVGGraphics2D(svg);
-
-        JRGraphics2DExporter exporter = new JRGraphics2DExporter();
-        exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
-        exporter.setParameter(JRGraphics2DExporterParameter.GRAPHICS_2D, grx);
-        exporter.setParameter(JRExporterParameter.PAGE_INDEX, new Integer(0));
-        exporter.exportReport();
-
-        grx.stream(new FileWriter(new File("src/main/java/com/codinginfinity/research/report/AccreditationUnitReport.svg")), true);
-
-        //this.pdf = pdf;
-        // this.xml = xml;
+        this.print = print;
     }
 
-    public Document getSVG(){
-        return svg;
-    }
-    /* public PDF getPDF(){
-        return pdf;
+    public void getSVG(){
+        try{
+            DOMImplementation domImpl = GenericDOMImplementation.getDOMImplementation();
+            Document document = domImpl.createDocument(null, "svg", null);
+            SVGGraphics2D grx = new SVGGraphics2D(document);
+
+            JRGraphics2DExporter exporter = new JRGraphics2DExporter();
+            exporter.setParameter(JRExporterParameter.JASPER_PRINT, print);
+            exporter.setParameter(JRGraphics2DExporterParameter.GRAPHICS_2D, grx);
+            exporter.setParameter(JRExporterParameter.PAGE_INDEX, new Integer(0));
+            exporter.exportReport();
+
+            grx.stream(new FileWriter(new File("reporting.svg")), true);
+        }
+        catch(JRException e){}
+        catch(IOException e){}
     }
 
-    public XML getXML(){
-        return xml;
-    }*/
+    public void getPDF(){
+        try{
 
-    private final Document svg;
-    //private PDF pdf;
-    //private XML xml;
+            JasperExportManager.exportReportToPdfFile(print, "reporting.pdf");
+
+        }
+        catch( JRException e){
+            System.err.println( "JRException " + e);
+        }
+
+    }
+
+    /**
+     *
+     */
+    public void getXML(){
+        try{
+            JasperExportManager.exportReportToXmlFile(print, "reporting.xml", true);
+
+        }
+        catch( JRException e){
+            System.err.println( "JRException " + e);
+        }
+
+
+    }
+
+    /**
+     *
+     */
+    public void getHTML(){
+        try{
+            JasperExportManager.exportReportToHtmlFile(print, "reporting.xml");
+
+        }
+        catch( JRException e){
+            System.err.println( "JRException " + e);
+        }
+
+    }
 
 }
