@@ -16,16 +16,14 @@ public interface Reporting {
      * Service Contract Contract that allows a user to request a report on the accreditation units of Publications
      * @param getAccreditationUnitReportRequest An object that will specify exactly what has been requested
      * @return GetAccreditationUnitReportResponse that will contain the information requested
-     * @throws InvalidRequestException
      */
-    public GetAccreditationUnitReportResponse getAccreditationUnitReport(GetAccreditationUnitReportRequest getAccreditationUnitReportRequest) throws  InvalidRequestException;//,InvalidEndDateException;
+    public GetAccreditationUnitReportResponse getAccreditationUnitReport(GetAccreditationUnitReportRequest getAccreditationUnitReportRequest);
     
     /**
      * Service Contract that allows a user to request a report on the progress of Publications
      * @param getProgressReportRequest An object that will specify exactly what has been requested
      * @return GetProgressReportResponse that will contain the information requested
-     * @throws InvalidRequestException
      */
-    public GetProgressReportResponse getProgressReport(GetProgressReportRequest getProgressReportRequest) throws InvalidRequestException;
+    public GetProgressReportResponse getProgressReport(GetProgressReportRequest getProgressReportRequest);
     
 }
