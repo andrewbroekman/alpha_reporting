@@ -30,29 +30,58 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.codinginfinity.research.people.*;
-import com.codinginfinity.research.report.*;
 import com.codinginfinity.research.publication.*;
 
+import javax.persistence.*;
 public class ReportingImpl implements Reporting
 {
+    EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("PersistenceUnit");
+    EntityManager entitymanager = emfactory.createEntityManager();
 
     @Override
     public GetAccreditationUnitReportResponse getAccreditationUnitReport(GetAccreditationUnitReportRequest request) throws InvalidRequestException
     {
         if(request != null)
         {
-
+            
         }
         else
             throw new InvalidRequestException();
-        return null;
     }
+
+    private GetAccreditationUnitReportResponse buildAccreditationReport(Query q)
+    {
+        try
+        {
+            JasperPrint jasperPrint;
+            InputStream input = new FileInputStream(new File("./AccreditationUnitReport.jrxml"));
+            JasperDesign design = JRXmlLoader.load(input);
+            JasperReport report = JasperCompileManager.compileReport(design);
+            Map parameters = new HashMap();
+            parameters.put("DETAILS", "Progress report from DATE to DATE");
+            parameters.put("DETAILS", "Progress report from DATE to DATE");
+
+            GetAccreditationUnitReportResponse response;
+            ArrayList<Publication> list = (ArrayList<Publication>) q.getResultList();
+
+            JRBeanCollectionDataSource ColDataSource = new JRBeanCollectionDataSource(list);
+            jasperPrint = JasperFillManager.fillReport(report, parameters, ColDataSource);
+
+            response = new GetAccreditationUnitReportResponse(jasperPrint);
+            return response;
+        }
+        catch(FileNotFoundException | JRException e)
+        {
+            return null;
+        }
+    }
+
 
     /**
      * Generates the correct JPQL query according to the request that is passed in
      * @return string containing the JPQL query to be executed
      */
-    public String generateAccreditationQuery(GetAccreditationUnitReportRequest request)
+    String generateAccreditationQuery(GetAccreditationUnitReportRequest request) throws InvalidRequestException
     {
         ReqEntity entity = request.getEntity();
         LifeCycleState state = request.getLifeCycleState();
@@ -166,6 +195,7 @@ public class ReportingImpl implements Reporting
                //Todo: implement this part for period
            }
         }
+        //entity is null
         else
         {
             if(state != null && type == null && period == null)
@@ -206,6 +236,12 @@ public class ReportingImpl implements Reporting
             //Todo: implement this part for period
             else if(state == null && type != null && period != null)
             {}
+
+            //If everything is null
+            else if(state == null && type == null && period == null)
+            {
+                throw new InvalidRequestException();
+            }
             //Todo: implement this part for period
             else
             {}
@@ -218,5 +254,14 @@ public class ReportingImpl implements Reporting
     public GetProgressReportResponse getProgressReport(GetProgressReportRequest getProgressReportRequest) throws InvalidRequestException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+/*Todo: make sure this method will actually work to disconnect from database when the object is destroyed/ when
+ programme is closed, otherwise the entityManager should be passed in and closed externally*/
+    @Override
+    protected void finalize()
+    {
+        entitymanager.close();
+        emfactory.close();
+    }
+
     
 }
