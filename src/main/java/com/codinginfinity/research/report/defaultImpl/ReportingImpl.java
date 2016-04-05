@@ -43,7 +43,8 @@ public class ReportingImpl implements Reporting
     {
         if(request != null)
         {
-            
+            Query query = entitymanager.createQuery(generateAccreditationQuery(request));
+            return buildAccreditationReport(query);
         }
         else
             throw new InvalidRequestException();
