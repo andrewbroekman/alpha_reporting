@@ -24,7 +24,7 @@ public class ReportingImpl implements Reporting{
     }
     
     /**
-     * 
+     *  This function builds the querries for the progress report using the entinty and the public type values
      * @param entity
      * @param pubType
      * @return Query This function returns the query string 
@@ -69,10 +69,35 @@ public class ReportingImpl implements Reporting{
                    + "GROUP BY p.title" ;
             }
         }
-        
-        //TO-DO
-        //Finish implementation
-        return "";
+        else{
+            String type = Entity.getType();
+            String name = Entity.getName();
+            
+            if(type == "group"){
+                
+           return "SELECT p.title as TITLE, p.misc as PROGRESS, p.name AS PUBLICATION_TYPE, r.name as RESEARCH_GROUP"
+                   +"FROM PUBLICATION p"
+                   +"INNER JOIN PUBLICATION_PERSON s ON p.publicationid = s.publication_publicationid  "
+                   + "INNER JOIN PERSON u ON u.personid = s.authors_personid"
+                   + "INNER JOIN RESEARCHGROUP r ON r.groupid = u.group_groupid"
+                   + "WHERE p.lifecyclestate = 'InProgress'" 
+                    + "AND p.name = '" + pubtype.getName() + "'"
+                   + "AND r.name = '" + name + "'"
+                   + "GROUP BY p.title" ;
+            }
+            else {
+                return "SELECT p.title as TITLE, p.misc as PROGRESS, r.name as RESEARCH_GROUP"
+                   +"FROM PUBLICATION p"
+                   +"INNER JOIN PUBLICATION_PERSON s ON p.publicationid = s.publication_publicationid  "
+                   + "INNER JOIN PERSON u ON u.personid = s.authors_personid"
+                   + "INNER JOIN RESEARCHGROUP r ON r.groupid = u.group_groupid"
+                   + "WHERE p.lifecyclestate = 'InProgress'" 
+                    + "AND p.name = '" + pubtype.getName() + "'"
+                   + "AND u.firstnames = '" + name + "'"
+                   + "GROUP BY p.title" ;
+            }
+            
+        }
     }
     
 }
