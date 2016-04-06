@@ -1,20 +1,16 @@
 /**
-*	@file GetProgressReportResponse.java
+*	@file GetAccreditationUnitReportResponse.java
 *	@author COS301 Reporting Alpha Team
 *	@version 1.0 alpha*
-*	@brief An object that represents a completed GetProgressReportRequest
+*	@brief An object that represents a completed GetAccreditationUnitReportRequest
 *	@section Description
-*	This object is what is returned once a reporting request is complete. It contains the generated reports based off of the data sent in the GetProgressReportRequest object.
-*	The report returned deals specifically with the progress status of publications.
+*	This object is what is returned once a reporting request is complete. It contains the generated reports based off of the data sent in the GetAccreditationUnitReportRequest object.
+*	The returned report will deal specifically with the accreditation units of people, groups, and publications.
 */
 
-package com.codinginfinity.research.report;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.OutputStream;
+package com.codinginfinity.research.report.defaultImpl;
+
+import com.codinginfinity.research.report.Response;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -26,20 +22,23 @@ import org.apache.batik.svggen.SVGGraphics2D;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 
-public class GetProgressReportResponse implements Response{
-    
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class GetAccreditationUnitReportResponse implements Response
+{
+    private static final long serialVersionUID = 1L;
+    private final JasperPrint print;
     /**
      * Assigns the JasperPrint file. This file allows us to generate XML, PDF and SVG formats of the report
      * @param print
      */
-    public GetProgressReportResponse(JasperPrint print) {
+    public GetAccreditationUnitReportResponse(JasperPrint print){
         super();
         this.print = print;
     }
-    
-    /**
-     * 
-     */
+
     public void getSVG(){
         try{
             DOMImplementation domImpl = GenericDOMImplementation.getDOMImplementation();
@@ -56,54 +55,47 @@ public class GetProgressReportResponse implements Response{
         }
         catch(JRException e){}
         catch(IOException e){}
-        //return svg;        
     }
-    
-    /**
-     * 
-     */
+
     public void getPDF(){
-        try{ 
-            
+        try{
+
             JasperExportManager.exportReportToPdfFile(print, "reporting.pdf");
-           
+
         }
         catch( JRException e){
             System.err.println( "JRException " + e);
         }
-        
-        //return pdf;        
+
     }
-    
+
     /**
-     * 
+     *
      */
     public void getXML(){
-        try{ 
+        try{
             JasperExportManager.exportReportToXmlFile(print, "reporting.xml", true);
-            
+
         }
         catch( JRException e){
             System.err.println( "JRException " + e);
         }
-        
-       
-        //return xml;        
+
+
     }
-    
+
     /**
-     * 
+     *
      */
     public void getHTML(){
-        try{ 
+        try{
             JasperExportManager.exportReportToHtmlFile(print, "reporting.xml");
-            
+
         }
         catch( JRException e){
             System.err.println( "JRException " + e);
         }
-        //return HtmlFile
+
     }
-    
-    private final JasperPrint print;    
+
 }
