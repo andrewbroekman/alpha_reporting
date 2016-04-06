@@ -10,10 +10,6 @@
  */
 package com.codinginfinity.research.report.defaultImpl;
 
-import com.codinginfinity.research.report.GetAccreditationUnitReportRequest;
-import com.codinginfinity.research.report.GetAccreditationUnitReportResponse;
-import com.codinginfinity.research.report.GetProgressReportRequest;
-import com.codinginfinity.research.report.GetProgressReportResponse;
 import com.codinginfinity.research.report.InvalidRequestException;
 import com.codinginfinity.research.report.Reporting;
 import net.sf.jasperreports.engine.*;
@@ -29,7 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.codinginfinity.research.people.*;
+import com.codinginfinity.research.people.Entity;
 import com.codinginfinity.research.publication.*;
 
 import javax.persistence.*;
@@ -84,7 +80,7 @@ public class ReportingImpl implements Reporting
      */
     String generateAccreditationQuery(GetAccreditationUnitReportRequest request) throws InvalidRequestException
     {
-        ReqEntity entity = request.getEntity();
+        Entity entity = request.getEntity();
         LifeCycleState state = request.getLifeCycleState();
         PublicationType type = request.getPublicationType();
         Period period = request.getPeriod();
