@@ -25,12 +25,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.codinginfinity.research.people.Entity;
+import com.codinginfinity.research.people.*;
 import com.codinginfinity.research.publication.*;
 
 import javax.persistence.*;
-public class ReportingImpl implements Reporting
-{
+public class ReportingImpl implements Reporting{
     EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("PersistenceUnit");
     EntityManager entitymanager = emfactory.createEntityManager();
 
@@ -46,8 +45,7 @@ public class ReportingImpl implements Reporting
             throw new InvalidRequestException();
     }
 
-    private GetAccreditationUnitReportResponse buildAccreditationReport(Query q)
-    {
+    private GetAccreditationUnitReportResponse buildAccreditationReport(Query q){
         try
         {
             JasperPrint jasperPrint;
@@ -78,10 +76,10 @@ public class ReportingImpl implements Reporting
      * Generates the correct JPQL query according to the request that is passed in
      * @return string containing the JPQL query to be executed
      */
-    String generateAccreditationQuery(GetAccreditationUnitReportRequest request) throws InvalidRequestException
-    {
+    String generateAccreditationQuery(GetAccreditationUnitReportRequest request) throws InvalidRequestException{
         Entity entity = request.getEntity();
         LifeCycleState state = request.getLifeCycleState();
+
         PublicationType type = request.getPublicationType();
         Period period = request.getPeriod();
         String query = null;
@@ -246,19 +244,97 @@ public class ReportingImpl implements Reporting
         }
         return query;
     }
-
-    @Override
-    public GetProgressReportResponse getProgressReport(GetProgressReportRequest getProgressReportRequest) throws InvalidRequestException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-/*Todo: make sure this method will actually work to disconnect from database when the object is destroyed/ when
- programme is closed, otherwise the entityManager should be passed in and closed externally*/
-    @Override
-    protected void finalize()
-    {
-        entitymanager.close();
-        emfactory.close();
-    }
-
     
-}
+    //==================================================================================================================
+    //==================================================================================================================
+
+    @Override
+    public GetProgressReportResponse getProgressReport(GetProgressReportRequest request) throws InvalidRequestException {
+         if(request != null)
+        {
+            Query query = entitymanager.createQuery(generateProgressReportQuery(request));
+            return buildProgressReport(query);
+        }
+        else
+            throw new InvalidRequestException();
+    }
+       
+    private String generateProgressReportQuery( GetProgressReportRequest request ) throws InvalidRequestException{
+        Entity entity = request.getEntity();
+        PublicationType pubtype = request.getPublicationType();
+        String query = null;
+        
+        if(entity == null)
+        {
+            
+            return "SELECT p.title as TITLE, p.misc as PROGRESS, r.name as RESEARCH_GROUP"
+                   +"FROM PUBLICATION p"
+                   +"INNER JOIN PUBLICATION_PERSON s ON p.publicationid = s.publication_publicationid  "
+                   + "INNER JOIN PERSON u ON u.personid = s.authors_personid"
+                   + "INNER JOIN RESEARCHGROUP r ON r.groupid = u.group_groupid"
+                   + "WHERE p.lifecyclestate = 'InProgress'" 
+                   + "AND p.name = '" + pubtype.getName() + "'"
+                   + "GROUP BY p.title" ;
+        }
+        else if(pubtype == null)
+        {
+            String type = entity.getType();
+            String name = entity.getName();
+            
+            if(type == "group"){
+                
+           return "SELECT p.title as TITLE, p.misc as PROGRESS, r.name as RESEARCH_GROUP"
+                   +"FROM PUBLICATION p"
+                   +"INNER JOIN PUBLICATION_PERSON s ON p.publicationid = s.publication_publicationid  "
+                   + "INNER JOIN PERSON u ON u.personid = s.authors_personid"
+                   + "INNER JOIN RESEARCHGROUP r ON r.groupid = u.group_groupid"
+                   + "WHERE p.lifecyclestate = 'InProgress'" 
+                   + "AND r.name = '" + name + "'"
+                   + "GROUP BY p.title" ;
+            }
+            else {
+                return "SELECT p.title as TITLE, p.misc as PROGRESS, r.name as RESEARCH_GROUP"
+                   +"FROM PUBLICATION p"
+                   +"INNER JOIN PUBLICATION_PERSON s ON p.publicationid = s.publication_publicationid  "
+                   + "INNER JOIN PERSON u ON u.personid = s.authors_personid"
+                   + "INNER JOIN RESEARCHGROUP r ON r.groupid = u.group_groupid"
+                   + "WHERE p.lifecyclestate = 'InProgress'" 
+                   + "AND u.firstnames = '" + name + "'"
+                   + "GROUP BY p.title" ;
+            }
+        }
+        else if(entity != null && pubtype != null)
+        {
+            
+            String type = entity.getType();
+            String name = entity.getName();
+            
+            if(type == "group"){
+                
+           return "SELECT p.title as TITLE, p.misc as PROGRESS, p.name AS PUBLICATION_TYPE, r.name as RESEARCH_GROUP"
+                   +"FROM PUBLICATION p"
+                   +"INNER JOIN PUBLICATION_PERSON s ON p.publicationid = s.publication_publicationid  "
+                   + "INNER JOIN PERSON u ON u.personid = s.authors_personid"
+                   + "INNER JOIN RESEARCHGROUP r ON r.groupid = u.group_groupid"
+                   + "WHERE p.lifecyclestate = 'InProgress'" 
+                    + "AND p.name = '" + pubtype.getName() + "'"
+                   + "AND r.name = '" + name + "'"
+                   + "GROUP BY p.title" ;
+            }
+            else {
+                return "SELECT p.title as TITLE, p.misc as PROGRESS, r.name as RESEARCH_GROUP"
+                   +"FROM PUBLICATION p"
+                   +"INNER JOIN PUBLICATION_PERSON s ON p.publicationid = s.publication_publicationid  "
+                   + "INNER JOIN PERSON u ON u.personid = s.authors_personid"
+                   + "INNER JOIN RESEARCHGROUP r ON r.groupid = u.group_groupid"
+                   + "WHERE p.lifecyclestate = 'InProgress'" 
+                    + "AND p.name = '" + pubtype.getName() + "'"
+                   + "AND u.firstnames = '" + name + "'"
+                   + "GROUP BY p.title" ;
+            }            
+        }  
+        
+        throw new InvalidRequestException();
+    }
+    
+}  
