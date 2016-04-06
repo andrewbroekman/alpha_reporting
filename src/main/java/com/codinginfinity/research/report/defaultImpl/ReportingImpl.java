@@ -337,4 +337,30 @@ public class ReportingImpl implements Reporting{
         throw new InvalidRequestException();
     }
     
+    private GetProgressReportResponse buildProgressReport(Query q){
+        try
+        {
+            JasperPrint jasperPrint;
+            InputStream input = new FileInputStream(new File("./ProgressReportTemplate.jrxml"));
+            JasperDesign design = JRXmlLoader.load(input);
+            JasperReport report = JasperCompileManager.compileReport(design);
+            Map parameters = new HashMap();
+            parameters.put("DETAILS", "Progress report from DATE to DATE");
+            parameters.put("DETAILS", "Progress report from DATE to DATE");
+
+            GetProgressReportResponse response;
+            ArrayList<Publication> list = (ArrayList<Publication>) q.getResultList();
+
+            JRBeanCollectionDataSource ColDataSource = new JRBeanCollectionDataSource(list);
+            jasperPrint = JasperFillManager.fillReport(report, parameters, ColDataSource);
+
+            response = new GetProgressReportResponse(jasperPrint);
+            return response;
+        }
+        catch(FileNotFoundException | JRException e)
+        {
+            return null;
+        }
+    }
+    
 }  
