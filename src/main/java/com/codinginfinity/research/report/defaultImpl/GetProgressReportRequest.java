@@ -8,8 +8,15 @@
 *	The report requested deals specifically with the progress status of publications.
 */
 
-package com.codinginfinity.research.report;
-public class GetProgressReportRequest implements Request{
+package com.codinginfinity.research.report.defaultImpl;
+
+import com.codinginfinity.research.report.Request;
+import com.codinginfinity.research.publication.*;
+import com.codinginfinity.research.people.Entity;
+
+public class GetProgressReportRequest implements Request
+{
+    private static final long serialVersionUID = 1L;
 	Entity requestedEntity;
 	PublicationType requestedPublicationType;
         

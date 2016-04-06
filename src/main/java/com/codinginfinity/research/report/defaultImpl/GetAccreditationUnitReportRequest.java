@@ -8,37 +8,32 @@
 *	The report requested deals specifically with the accreditation units of people, groups, or publications.
 */
 
-package com.codinginfinity.research.report;
+package com.codinginfinity.research.report.defaultImpl;
 
-//import java.io.File;
 
-import net.sf.jasperreports.engine.*;
-import net.sf.jasperreports.engine.design.JasperDesign;
-import net.sf.jasperreports.engine.export.JRGraphics2DExporter;
-import net.sf.jasperreports.engine.export.JRGraphics2DExporterParameter;
-import net.sf.jasperreports.engine.xml.JRXmlLoader;
-import org.apache.batik.dom.GenericDOMImplementation;
-import org.apache.batik.svggen.SVGGraphics2D;
-import org.w3c.dom.DOMImplementation;
-import org.w3c.dom.Document;
 
-import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
+import com.codinginfinity.research.publication.*;
+import com.codinginfinity.research.people.Entity;
+import com.codinginfinity.research.report.Request;
 
-public class GetAccreditationUnitReportRequest {
+public class GetAccreditationUnitReportRequest implements Request
+{
+	private static final long serialVersionUID = 1L;
 	Entity requestedEntity;
 	LifeCycleState requestedLifeCycleState;
 	PublicationType requestedPublicationType;
 	Period requestedPeriod;
-
-	public GetAccreditationUnitReportRequest(Entity entity, LifeCycleState state,PublicationType type, Period period) {
+	public GetAccreditationUnitReportRequest(Entity entity, LifeCycleState state,PublicationType type, Period
+			period)
+	{
 		super();
 		this.requestedEntity = entity;
 		this.requestedPublicationType = type;
 		this.requestedLifeCycleState=state;
 		this.requestedPeriod=period;
 	}
+
+
 
 	public Entity getEntity() {
 		return requestedEntity;
