@@ -1,12 +1,10 @@
 /**
- *	@file ReportingMock.java
- *       @class Reporting
+ *	@file ReportingImpl.java
+ *      @class ReportingImpl
  *	@author COS301 Reporting Alpha Team
  *	@version 1.0 alpha
- *	@brief A mock object that mocks the generated reports
- *	@section Description
- * 	This class will mock the two service contracts provided by Reporting interface.
- *
+ *	@brief Am implementation of the Reporting.java interface
+ *	@section Description 
  */
 package com.codinginfinity.research.report.defaultImpl;
 
@@ -25,12 +23,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.codinginfinity.research.people.*;
-import com.codinginfinity.research.publication.*;
+import com.codinginfinity.research.people.ReqEntity;
+import com.codinginfinity.research.publication.Publication;
+import com.codinginfinity.research.publication.PublicationType;
+import com.codinginfinity.research.publication.LifeCycleState;
 
 import javax.persistence.*;
 public class ReportingImpl implements Reporting{
-    EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("PersistenceUnit");
+    EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("ReportingTestUnit");
     EntityManager entitymanager = emfactory.createEntityManager();
 
     @Override
@@ -77,11 +77,11 @@ public class ReportingImpl implements Reporting{
      * @return string containing the JPQL query to be executed
      */
     String generateAccreditationQuery(GetAccreditationUnitReportRequest request) throws InvalidRequestException{
-        Entity entity = request.getEntity();
+        ReqEntity entity = request.getEntity();
         LifeCycleState state = request.getLifeCycleState();
 
         PublicationType type = request.getPublicationType();
-        Period period = request.getPeriod();
+        //Period period = request.getPeriod();
         String query = null;
 
         if(entity != null)
@@ -260,7 +260,7 @@ public class ReportingImpl implements Reporting{
     }
        
     private String generateProgressReportQuery( GetProgressReportRequest request ) throws InvalidRequestException{
-        Entity entity = request.getEntity();
+        ReqEntity entity = request.getEntity();
         PublicationType pubtype = request.getPublicationType();
         String query = null;
         
