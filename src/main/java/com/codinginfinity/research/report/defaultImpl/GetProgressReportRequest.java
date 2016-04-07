@@ -12,25 +12,25 @@ package com.codinginfinity.research.report.defaultImpl;
 
 import com.codinginfinity.research.report.Request;
 import com.codinginfinity.research.publication.*;
-import com.codinginfinity.research.people.Entity;
+import com.codinginfinity.research.people.ReqEntity;
 
 public class GetProgressReportRequest implements Request
 {
     private static final long serialVersionUID = 1L;
-	Entity requestedEntity;
+	ReqEntity requestedEntity;
 	PublicationType requestedPublicationType;
         
-        public GetProgressReportRequest(Entity entity, PublicationType type) {
+        public GetProgressReportRequest(ReqEntity entity, PublicationType type) {
             super();
             this.requestedEntity = entity;
             this.requestedPublicationType = type;
         }
         
-        public Entity getEntity() {
+        public ReqEntity getEntity() {
             return requestedEntity;
         }
         
-        public void setEntity(Entity entity) {
+        public void setEntity(ReqEntity entity) {
             this.requestedEntity = entity;
         }
         
