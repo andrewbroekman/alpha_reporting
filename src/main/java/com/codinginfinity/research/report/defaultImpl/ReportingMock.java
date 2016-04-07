@@ -10,10 +10,6 @@
  */
 package com.codinginfinity.research.report.defaultImpl;
 
-import com.codinginfinity.research.report.GetAccreditationUnitReportRequest;
-import com.codinginfinity.research.report.GetAccreditationUnitReportResponse;
-import com.codinginfinity.research.report.GetProgressReportRequest;
-import com.codinginfinity.research.report.GetProgressReportResponse;
 import com.codinginfinity.research.report.InvalidRequestException;
 import com.codinginfinity.research.report.Reporting;
 
