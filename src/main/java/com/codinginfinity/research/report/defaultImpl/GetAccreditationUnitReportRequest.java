@@ -22,15 +22,15 @@ public class GetAccreditationUnitReportRequest implements Request
 	ReqEntity requestedEntity;
 	LifeCycleState requestedLifeCycleState;
 	PublicationType requestedPublicationType;
-	//Period requestedPeriod;
-	public GetAccreditationUnitReportRequest(ReqEntity entity, LifeCycleState state,PublicationType type/*, Period
-			period*/)
+	Period requestedPeriod;
+	public GetAccreditationUnitReportRequest(ReqEntity entity, LifeCycleState state,PublicationType type, Period
+			period)
 	{
 		super();
 		this.requestedEntity = entity;
 		this.requestedPublicationType = type;
 		this.requestedLifeCycleState=state;
-		//this.requestedPeriod=period;
+		this.requestedPeriod=period;
 	}
 
 
@@ -58,7 +58,7 @@ public class GetAccreditationUnitReportRequest implements Request
 	public void setPublicationType(PublicationType type) {
 		this.requestedPublicationType = type;
 	}
-/*
+
 	public Period getPeriod(){
 		return this.requestedPeriod;
 	}
@@ -66,5 +66,4 @@ public class GetAccreditationUnitReportRequest implements Request
 	public void setPeriod(Period period){
 		this.requestedPeriod=period;
 	}
-*/
 }
