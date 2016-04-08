@@ -20,6 +20,23 @@ public class GetProgressReportRequest implements Request
 	ReqEntity requestedEntity;
 	PublicationType requestedPublicationType;
         
+        public GetProgressReportRequest(){
+            super();
+            this.requestedEntity = null;
+            this.requestedPublicationType = null;
+        }
+        
+        public GetProgressReportRequest(ReqEntity entity){
+            super();
+            this.requestedEntity = entity;
+            this.requestedPublicationType = null;
+        }
+        public GetProgressReportRequest(PublicationType type){
+            super();
+            this.requestedEntity = null;
+            this.requestedPublicationType = type;
+        }
+        
         public GetProgressReportRequest(ReqEntity entity, PublicationType type) {
             super();
             this.requestedEntity = entity;
