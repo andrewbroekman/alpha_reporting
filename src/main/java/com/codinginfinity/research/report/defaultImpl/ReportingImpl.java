@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+
 import com.codinginfinity.research.people.Entity;
 import com.codinginfinity.research.publication.*;
 
@@ -78,6 +79,8 @@ public class ReportingImpl implements Reporting
      * Generates the correct JPQL query according to the request that is passed in
      * @return string containing the JPQL query to be executed
      */
+
+
     String generateAccreditationQuery(GetAccreditationUnitReportRequest request) throws InvalidRequestException
     {
         Entity entity = request.getEntity();
@@ -246,19 +249,119 @@ public class ReportingImpl implements Reporting
         }
         return query;
     }
-
     @Override
-    public GetProgressReportResponse getProgressReport(GetProgressReportRequest getProgressReportRequest) throws InvalidRequestException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public GetProgressReportResponse getProgressReport(GetProgressReportRequest request) throws InvalidRequestException {
+         if(request != null)
+        {
+            Query query = entitymanager.createQuery(generateProgressReportQuery(request));
+            return buildProgressReport(query);
+        }
+        else
+            throw new InvalidRequestException();
     }
-/*Todo: make sure this method will actually work to disconnect from database when the object is destroyed/ when
- programme is closed, otherwise the entityManager should be passed in and closed externally*/
-    @Override
-    protected void finalize()
-    {
-        entitymanager.close();
-        emfactory.close();
+       
+    private String generateProgressReportQuery( GetProgressReportRequest request ) throws InvalidRequestException{
+        Entity entity = request.getEntity();
+        PublicationType pubtype = request.getPublicationType();
+        String query = null;
+        
+        if(entity == null)
+        {
+            
+            return "SELECT p.title as TITLE, p.misc as PROGRESS, r.name as RESEARCH_GROUP"
+                   +"FROM PUBLICATION p"
+                   +"INNER JOIN PUBLICATION_PERSON s ON p.publicationid = s.publication_publicationid  "
+                   + "INNER JOIN PERSON u ON u.personid = s.authors_personid"
+                   + "INNER JOIN RESEARCHGROUP r ON r.groupid = u.group_groupid"
+                   + "WHERE p.lifecyclestate = 'InProgress'" 
+                   + "AND p.name = '" + pubtype.getName() + "'"
+                   + "GROUP BY p.title" ;
+        }
+        else if(pubtype == null)
+        {
+            String type = entity.getType();
+            String name = entity.getName();
+            
+            if(type == "group"){
+                
+           return "SELECT p.title as TITLE, p.misc as PROGRESS, r.name as RESEARCH_GROUP"
+                   +"FROM PUBLICATION p"
+                   +"INNER JOIN PUBLICATION_PERSON s ON p.publicationid = s.publication_publicationid  "
+                   + "INNER JOIN PERSON u ON u.personid = s.authors_personid"
+                   + "INNER JOIN RESEARCHGROUP r ON r.groupid = u.group_groupid"
+                   + "WHERE p.lifecyclestate = 'InProgress'" 
+                   + "AND r.name = '" + name + "'"
+                   + "GROUP BY p.title" ;
+            }
+            else {
+                return "SELECT p.title as TITLE, p.misc as PROGRESS, r.name as RESEARCH_GROUP"
+                   +"FROM PUBLICATION p"
+                   +"INNER JOIN PUBLICATION_PERSON s ON p.publicationid = s.publication_publicationid  "
+                   + "INNER JOIN PERSON u ON u.personid = s.authors_personid"
+                   + "INNER JOIN RESEARCHGROUP r ON r.groupid = u.group_groupid"
+                   + "WHERE p.lifecyclestate = 'InProgress'" 
+                   + "AND u.firstnames = '" + name + "'"
+                   + "GROUP BY p.title" ;
+            }
+        }
+        else if(entity != null && pubtype != null)
+        {
+            
+            String type = entity.getType();
+            String name = entity.getName();
+            
+            if(type == "group"){
+                
+           return "SELECT p.title as TITLE, p.misc as PROGRESS, p.name AS PUBLICATION_TYPE, r.name as RESEARCH_GROUP"
+                   +"FROM PUBLICATION p"
+                   +"INNER JOIN PUBLICATION_PERSON s ON p.publicationid = s.publication_publicationid  "
+                   + "INNER JOIN PERSON u ON u.personid = s.authors_personid"
+                   + "INNER JOIN RESEARCHGROUP r ON r.groupid = u.group_groupid"
+                   + "WHERE p.lifecyclestate = 'InProgress'" 
+                    + "AND p.name = '" + pubtype.getName() + "'"
+                   + "AND r.name = '" + name + "'"
+                   + "GROUP BY p.title" ;
+            }
+            else {
+                return "SELECT p.title as TITLE, p.misc as PROGRESS, r.name as RESEARCH_GROUP"
+                   +"FROM PUBLICATION p"
+                   +"INNER JOIN PUBLICATION_PERSON s ON p.publicationid = s.publication_publicationid  "
+                   + "INNER JOIN PERSON u ON u.personid = s.authors_personid"
+                   + "INNER JOIN RESEARCHGROUP r ON r.groupid = u.group_groupid"
+                   + "WHERE p.lifecyclestate = 'InProgress'" 
+                    + "AND p.name = '" + pubtype.getName() + "'"
+                   + "AND u.firstnames = '" + name + "'"
+                   + "GROUP BY p.title" ;
+            }            
+        }  
+        
+        throw new InvalidRequestException();
     }
+    
+    private GetProgressReportResponse buildProgressReport(Query q){
+        try
+        {
+            JasperPrint jasperPrint;
+            InputStream input = new FileInputStream(new File("./ProgressReportTemplate.jrxml"));
+            JasperDesign design = JRXmlLoader.load(input);
+            JasperReport report = JasperCompileManager.compileReport(design);
+            Map parameters = new HashMap();
+            parameters.put("DETAILS", "Progress report from DATE to DATE");
+            parameters.put("DETAILS", "Progress report from DATE to DATE");
 
+            GetProgressReportResponse response;
+            ArrayList<Publication> list = (ArrayList<Publication>) q.getResultList();
+
+            JRBeanCollectionDataSource ColDataSource = new JRBeanCollectionDataSource(list);
+            jasperPrint = JasperFillManager.fillReport(report, parameters, ColDataSource);
+
+            response = new GetProgressReportResponse(jasperPrint);
+            return response;
+        }
+        catch(FileNotFoundException | JRException e)
+        {
+            return null;
+        }
+    }
     
 }
