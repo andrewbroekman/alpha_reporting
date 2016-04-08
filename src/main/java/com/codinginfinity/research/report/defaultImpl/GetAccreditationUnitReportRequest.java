@@ -9,9 +9,6 @@
 */
 
 package com.codinginfinity.research.report.defaultImpl;
-
-
-
 import com.codinginfinity.research.publication.*;
 import com.codinginfinity.research.people.ReqEntity;
 import com.codinginfinity.research.report.Request;
@@ -23,6 +20,13 @@ public class GetAccreditationUnitReportRequest implements Request
 	LifeCycleState requestedLifeCycleState;
 	PublicationType requestedPublicationType;
 	Period requestedPeriod;
+        public GetAccreditationUnitReportRequest(){
+            super();
+            this.requestedEntity = null;
+            this.requestedPublicationType = null;
+            this.requestedLifeCycleState=null;
+            this.requestedPeriod=null;
+        }
 	public GetAccreditationUnitReportRequest(ReqEntity entity, LifeCycleState state,PublicationType type, Period
 			period)
 	{
