@@ -27,6 +27,7 @@ import com.codinginfinity.research.people.ReqEntity;
 import com.codinginfinity.research.publication.Publication;
 import com.codinginfinity.research.publication.PublicationType;
 import com.codinginfinity.research.publication.LifeCycleState;
+import com.codinginfinity.research.publication.Period;
 
 import javax.persistence.*;
 public class ReportingImpl implements Reporting{
@@ -81,14 +82,14 @@ public class ReportingImpl implements Reporting{
         LifeCycleState state = request.getLifeCycleState();
 
         PublicationType type = request.getPublicationType();
-        //Period period = request.getPeriod();
+        Period period = request.getPeriod();
         String query = null;
 
         if(entity != null)
         {
            if(state == null && type == null && period == null)
            {
-               if(entity.getType() == "person")
+               if("person".equalsIgnoreCase(entity.getType()))
                {
                    query = "SELECT b.ACCREDITATIONPOINTS AS UNITS, b.TITLE AS TITLE, " +
                            "b.NAME AS TYPE, b.LIFECYCLESTATE AS STATE " +
@@ -109,7 +110,7 @@ public class ReportingImpl implements Reporting{
            }
             else if(state != null && type == null && period == null)
            {
-               if(entity.getType() == "person")
+               if("person".equalsIgnoreCase(entity.getType()))
                {
                    query = "SELECT b.ACCREDITATIONPOINTS AS UNITS, b.TITLE AS TITLE, " +
                            "b.NAME AS TYPE, b.LIFECYCLESTATE AS STATE " +
@@ -133,7 +134,7 @@ public class ReportingImpl implements Reporting{
            }
             else if(state == null && type != null && period == null)
            {
-               if(entity.getType() == "person")
+               if("person".equalsIgnoreCase(entity.getType()))
                {
                    query = "SELECT b.ACCREDITATIONPOINTS AS UNITS, b.TITLE AS TITLE, " +
                            "b.NAME AS TYPE, b.LIFECYCLESTATE AS STATE " +
@@ -158,7 +159,7 @@ public class ReportingImpl implements Reporting{
 
            else if(state != null && type != null && period == null)
            {
-               if(entity.getType() == "person")
+               if("person".equalsIgnoreCase(entity.getType()))
                {
                    query = "SELECT b.ACCREDITATIONPOINTS AS UNITS, b.TITLE AS TITLE, " +
                            "b.NAME AS TYPE, b.LIFECYCLESTATE AS STATE " +
@@ -250,16 +251,22 @@ public class ReportingImpl implements Reporting{
 
     @Override
     public GetProgressReportResponse getProgressReport(GetProgressReportRequest request) throws InvalidRequestException {
-         if(request != null)
+        if(request == null){
+            throw new InvalidRequestException();
+        }
+        else if(request.getEntity() == null && request.getPublicationType()==null)
+        {
+            throw new InvalidRequestException();
+        }
+        else
         {
             Query query = entitymanager.createQuery(generateProgressReportQuery(request));
             return buildProgressReport(query);
         }
-        else
-            throw new InvalidRequestException();
+        
     }
        
-    private String generateProgressReportQuery( GetProgressReportRequest request ) throws InvalidRequestException{
+    private String generateProgressReportQuery( GetProgressReportRequest request ){
         ReqEntity entity = request.getEntity();
         PublicationType pubtype = request.getPublicationType();
         String query = null;
@@ -278,10 +285,12 @@ public class ReportingImpl implements Reporting{
         }
         else if(pubtype == null)
         {
+            System.out.println("HERE 1---------------------------------------------------------------");
             String type = entity.getType();
             String name = entity.getName();
             
-            if(type == "group"){
+            if("group".equalsIgnoreCase(type)){
+                System.out.println("HERE 2------------------------------------------------------");
                 
            return "SELECT p.title as TITLE, p.misc as PROGRESS, r.name as RESEARCH_GROUP"
                    +"FROM PUBLICATION p"
@@ -293,23 +302,27 @@ public class ReportingImpl implements Reporting{
                    + "GROUP BY p.title" ;
             }
             else {
-                return "SELECT p.title as TITLE, p.misc as PROGRESS, r.name as RESEARCH_GROUP"
-                   +"FROM PUBLICATION p"
-                   +"INNER JOIN PUBLICATION_PERSON s ON p.publicationid = s.publication_publicationid  "
-                   + "INNER JOIN PERSON u ON u.personid = s.authors_personid"
-                   + "INNER JOIN RESEARCHGROUP r ON r.groupid = u.group_groupid"
-                   + "WHERE p.lifecyclestate = 'InProgress'" 
-                   + "AND u.firstnames = '" + name + "'"
-                   + "GROUP BY p.title" ;
+                System.out.println("HERE 3 --------------------------------------------");
+                String r = "SELECT p.title as TITLE, p.misc as PROGRESS, r.name as RESEARCH_GROUP FROM PUBLICATION p INNER JOIN PERSON u.personid INNER JOIN RESEARCHGROUP r.groupid WHERE p.lifecyclestate = 'InProgress' AND u.firstnames = 'Dave' GROUP BY p.title"; 
+                        
+                       
+                return  r;/*"SELECT p.title as TITLE, p.misc as PROGRESS, r.name as RESEARCH_GROUP"
+                   +" FROM PUBLICATION p "
+                   +" INNER JOIN PUBLICATION_PERSON s ON p.publicationid = s.publication_publicationid "
+                   +" INNER JOIN PERSON u ON u.personid = s.authors_personid "
+                   +" INNER JOIN RESEARCHGROUP r ON r.groupid = u.group_groupid "
+                   +" WHERE p.lifecyclestate = 'InProgress' " 
+                   +" AND u.firstnames = '" + name + "' "
+                   +" GROUP BY p.title" ;*/
             }
         }
-        else if(entity != null && pubtype != null)
+        else
         {
             
             String type = entity.getType();
             String name = entity.getName();
             
-            if(type == "group"){
+            if("group".equalsIgnoreCase(type)){
                 
            return "SELECT p.title as TITLE, p.misc as PROGRESS, p.name AS PUBLICATION_TYPE, r.name as RESEARCH_GROUP"
                    +"FROM PUBLICATION p"
@@ -334,7 +347,6 @@ public class ReportingImpl implements Reporting{
             }            
         }  
         
-        throw new InvalidRequestException();
     }
     
     private GetProgressReportResponse buildProgressReport(Query q){
