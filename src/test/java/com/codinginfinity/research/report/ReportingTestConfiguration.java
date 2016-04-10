@@ -12,12 +12,14 @@ import com.codinginfinity.research.report.defaultImpl.GetProgressReportRequest;
 import com.codinginfinity.research.report.defaultImpl.GetAccreditationUnitReportRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 /**
  *
  * @author Nsovo
  */
 @Configuration
+@EnableAspectJAutoProxy(proxyTargetClass=true)
 class ReportingTestConfiguration {
     @Bean
     public ReportingImpl ReportingMock(){        
@@ -55,6 +57,18 @@ class ReportingTestConfiguration {
         ReqEntity e  = new ReqEntity("PERSON", "Dave");
                
         return new GetProgressReportRequest(e);
+    }
+    
+    /**
+     * 
+     * @return 
+     */
+    @Bean
+    public GetAccreditationUnitReportRequest PersonEntityRequestMock1()
+    {
+        ReqEntity e  = new ReqEntity("PERSON", "Dave");
+      return new GetAccreditationUnitReportRequest(e, null, null, null);
+      
     }
     
     
