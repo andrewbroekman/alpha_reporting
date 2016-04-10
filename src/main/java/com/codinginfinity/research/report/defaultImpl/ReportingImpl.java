@@ -1,12 +1,10 @@
 /**
- *	@file ReportingMock.java
- *       @class Reporting
+ *	@file ReportingImpl.java
+ *      @class ReportingImpl
  *	@author COS301 Reporting Alpha Team
  *	@version 1.0 alpha
- *	@brief A mock object that mocks the generated reports
- *	@section Description
- * 	This class will mock the two service contracts provided by Reporting interface.
- *
+ *	@brief Am implementation of the Reporting.java interface
+ *	@section Description 
  */
 package com.codinginfinity.research.report.defaultImpl;
 
@@ -25,14 +23,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-
-import com.codinginfinity.research.people.Entity;
-import com.codinginfinity.research.publication.*;
+import com.codinginfinity.research.people.ReqEntity;
+import com.codinginfinity.research.publication.Publication;
+import com.codinginfinity.research.publication.PublicationType;
+import com.codinginfinity.research.publication.LifeCycleState;
+import com.codinginfinity.research.publication.Period;
 
 import javax.persistence.*;
-public class ReportingImpl implements Reporting
-{
-    EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("PersistenceUnit");
+public class ReportingImpl implements Reporting{
+    EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("ReportingTestUnit");
     EntityManager entitymanager = emfactory.createEntityManager();
 
     @Override
@@ -41,14 +40,21 @@ public class ReportingImpl implements Reporting
         if(request != null)
         {
             Query query = entitymanager.createQuery(generateAccreditationQuery(request));
+            entitymanager.close();
+            emfactory.close();
             return buildAccreditationReport(query);
+
+
         }
         else
+        {
+            entitymanager.close();
+            emfactory.close();
             throw new InvalidRequestException();
+        }
     }
 
-    private GetAccreditationUnitReportResponse buildAccreditationReport(Query q)
-    {
+    private GetAccreditationUnitReportResponse buildAccreditationReport(Query q){
         try
         {
             JasperPrint jasperPrint;
@@ -79,12 +85,10 @@ public class ReportingImpl implements Reporting
      * Generates the correct JPQL query according to the request that is passed in
      * @return string containing the JPQL query to be executed
      */
-
-
-    String generateAccreditationQuery(GetAccreditationUnitReportRequest request) throws InvalidRequestException
-    {
-        Entity entity = request.getEntity();
+    String generateAccreditationQuery(GetAccreditationUnitReportRequest request) throws InvalidRequestException{
+        ReqEntity entity = request.getEntity();
         LifeCycleState state = request.getLifeCycleState();
+
         PublicationType type = request.getPublicationType();
         Period period = request.getPeriod();
         String query = null;
@@ -93,106 +97,163 @@ public class ReportingImpl implements Reporting
         {
            if(state == null && type == null && period == null)
            {
-               if(entity.getType() == "person")
+               if("person".equalsIgnoreCase(entity.getType()))
                {
-                   query = "SELECT b.ACCREDITATIONPOINTS AS UNITS, b.TITLE AS TITLE, " +
-                           "b.NAME AS TYPE, b.LIFECYCLESTATE AS STATE " +
-                           "FROM PUBLICATION_PERSON a JOIN PUBLICATION b " +
-                           "ON a.PUBLICATION_PUBLICATIONID = b.PUBLICATIONID JOIN " +
-                           "PERSON p on a.AUTHORS_PERSONID = p.PERSONID" +
-                           " WHERE p.FIRSTNAMES = " + entity.getName();
+                   query = "SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
+                           " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
+                           "FROM  Publication b INNER JOIN b.authors p WHERE p.firstNames = \"entity.getName()\" ";
                }
                else
                {
-                   query = "SELECT b.ACCREDITATIONPOINTS AS UNITS, b.TITLE AS TITLE " +
-                           "b.NAME AS TYPE, b.LIFECYCLESTATE AS STATE " +
-                           "FROM PUBLICATION_PERSON a " +
-                           "JOIN PUBLICATION b on a.PUBLICATION_PUBLICATIONID = b.PUBLICATIONID " +
-                           "JOIN PERSON p ON a.AUTHORS_PERSONID = p.PERSONID JOIN RESEARCHGROUP g ON g.GROUPID = p.GROUP_GROUPID " +
-                           "WHERE g.NAME = " + entity.getName();
+                   query = "SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
+                           " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
+                           "FROM  Publication b INNER JOIN b.group g WHERE g.name = \"entity.getName()\" ";
                }
            }
             else if(state != null && type == null && period == null)
            {
-               if(entity.getType() == "person")
+               if("person".equalsIgnoreCase(entity.getType()))
                {
-                   query = "SELECT b.ACCREDITATIONPOINTS AS UNITS, b.TITLE AS TITLE, " +
-                           "b.NAME AS TYPE, b.LIFECYCLESTATE AS STATE " +
-                           "FROM PUBLICATION_PERSON a JOIN PUBLICATION b " +
-                           "ON a.PUBLICATION_PUBLICATIONID = b.PUBLICATIONID JOIN " +
-                           "PERSON p on a.AUTHORS_PERSONID = p.PERSONID" +
-                           " WHERE p.FIRSTNAMES = " + entity.getName() + " AND b.LIFECYCLESTATE = " + "'"+state
-                           .getLifeCycleState() +"'";
+                   query =  "SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
+                           " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
+                           "FROM  Publication b INNER JOIN b.authors p WHERE p.firstNames = \"entity.getName()\" " +
+                           "AND b.lifeCycleState.lifeCycleState = \"state.getName()\" ";
                }
                else
                {
-                   query = "SELECT b.ACCREDITATIONPOINTS AS UNITS, b.TITLE AS TITLE, " +
-                           "b.NAME AS TYPE, b.LIFECYCLESTATE AS STATE " +
-                           "FROM PUBLICATION_PERSON a " +
-                           "JOIN PUBLICATION b on a.PUBLICATION_PUBLICATIONID = b.PUBLICATIONID " +
-                           "JOIN PERSON p ON a.AUTHORS_PERSONID = p.PERSONID JOIN RESEARCHGROUP g ON g.GROUPID = p.GROUP_GROUPID " +
-                           "WHERE g.NAME = " + entity.getName() + " AND b.LIFECYCLESTATE = " + "'"+state
-                           .getLifeCycleState() +"'";
+                   query = "SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
+                           " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
+                           "FROM  Publication b INNER JOIN b.group g WHERE g.name = \"entity.getName()\" " +
+                           "AND b.lifeCycleState.lifeCycleState = \"state.getName()\" ";
+
                }
 
            }
             else if(state == null && type != null && period == null)
            {
-               if(entity.getType() == "person")
+               if("person".equalsIgnoreCase(entity.getType()))
                {
-                   query = "SELECT b.ACCREDITATIONPOINTS AS UNITS, b.TITLE AS TITLE, " +
-                           "b.NAME AS TYPE, b.LIFECYCLESTATE AS STATE " +
-                           "FROM PUBLICATION_PERSON a JOIN PUBLICATION b " +
-                           "ON a.PUBLICATION_PUBLICATIONID = b.PUBLICATIONID JOIN " +
-                           "PERSON p on a.AUTHORS_PERSONID = p.PERSONID" +
-                           " WHERE p.FIRSTNAMES = " + entity.getName() + " AND b.NAME = " + "'"+type.getName() +"'";
+                   query ="SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
+                           " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
+                           "FROM  Publication b INNER JOIN b.authors p WHERE p.firstNames = \"entity.getName()\" " +
+                           "AND b.publicationType.name = \"type.getName()\"";
                }
                else
                {
-                   query = "SELECT b.ACCREDITATIONPOINTS AS UNITS, b.TITLE AS TITLE, " +
-                           "b.NAME AS TYPE, b.LIFECYCLESTATE AS STATE " +
-                           "FROM PUBLICATION_PERSON a " +
-                           "JOIN PUBLICATION b on a.PUBLICATION_PUBLICATIONID = b.PUBLICATIONID " +
-                           "JOIN PERSON p ON a.AUTHORS_PERSONID = p.PERSONID JOIN RESEARCHGROUP g ON g.GROUPID = p.GROUP_GROUPID " +
-                           "WHERE g.NAME = " + entity.getName() + " AND b.NAME = " + "'"+type.getName() +"'";
+                   query = "SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
+                           " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
+                           "FROM  Publication b INNER JOIN b.group g WHERE g.name = \"entity.getName()\" " +
+                           "AND b.publicationType.name = \"type.getName()\"";
                }
            }
-           //Todo: implement this part for period
+
            else if(state == null && type == null && period != null)
-           {}
+           {
+               if("person".equalsIgnoreCase(entity.getType()))
+               {
+                   query = "SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
+                           " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
+                           "FROM  Publication b INNER JOIN b.group g WHERE g.name = \"entity.getName()\" " +
+                           "AND b.envisagedPublicationDate BETWEEN " + period.getStartDate() +
+                           " AND " + period.getEndDate();
+               }
+               else
+               {
+                   query =  "SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
+                            " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
+                            "FROM  Publication b INNER JOIN b.group g WHERE g.name = \"entity.getName()\" " +
+                           "AND b.envisagedPublicationDate BETWEEN " + period.getStartDate() +
+                           " AND " + period.getEndDate();
+               }
+           }
 
            else if(state != null && type != null && period == null)
            {
-               if(entity.getType() == "person")
+               if("person".equalsIgnoreCase(entity.getType()))
                {
-                   query = "SELECT b.ACCREDITATIONPOINTS AS UNITS, b.TITLE AS TITLE, " +
-                           "b.NAME AS TYPE, b.LIFECYCLESTATE AS STATE " +
-                           "FROM PUBLICATION_PERSON a JOIN PUBLICATION b " +
-                           "ON a.PUBLICATION_PUBLICATIONID = b.PUBLICATIONID JOIN " +
-                           "PERSON p on a.AUTHORS_PERSONID = p.PERSONID" +
-                           " WHERE p.FIRSTNAMES = " + entity.getName() + "AND b.LIFECYCLESTATE = " + "'"+state.getLifeCycleState() +"'" +
-                           " AND b.NAME = " + "'"+type.getName() +"'";
+                   query =  "SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
+                           " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
+                           "FROM  Publication b INNER JOIN b.authors p WHERE p.firstNames = \"entity.getName()\" " +
+                           "AND b.publicationType.name = \"type.getName()\"" +
+                           "AND b.lifeCycleState.lifeCycleState = \"state.getName()\" ";
                }
                else
                {
-                   query = "SELECT b.ACCREDITATIONPOINTS AS UNITS, b.TITLE AS TITLE, " +
-                           "b.NAME AS TYPE, b.LIFECYCLESTATE AS STATE " +
-                           "FROM PUBLICATION_PERSON a " +
-                           "JOIN PUBLICATION b on a.PUBLICATION_PUBLICATIONID = b.PUBLICATIONID " +
-                           "JOIN PERSON p ON a.AUTHORS_PERSONID = p.PERSONID JOIN RESEARCHGROUP g ON g.GROUPID = p.GROUP_GROUPID " +
-                           "WHERE g.NAME = " + entity.getName() + "AND b.LIFECYCLESTATE = " + "'"+state.getLifeCycleState() +"'" +
-                           " AND b.NAME = " + "'"+type.getName() +"'";
+                   query = "SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
+                           " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
+                           "FROM  Publication b INNER JOIN b.group g WHERE g.name = \"entity.getName()\" " +
+                           "AND b.publicationType.name = \"type.getName()\"" +
+                           "AND b.lifeCycleState.lifeCycleState = \"state.getName()\" ";
+
                }
            }
-           //Todo: implement this part for period
-           else if(state != null && type == null && period != null){}
 
-           //Todo: implement this part for period
+           else if(state != null && type == null && period != null)
+           {
+               if("person".equalsIgnoreCase(entity.getType()))
+               {
+                   query = "SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
+                           " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
+                           "FROM  Publication b INNER JOIN b.authors p WHERE p.firstNames = \"entity.getName()\" " +
+                           "AND b.lifeCycleState.lifeCycleState = \"state.getName()\" " +
+                           "AND b.envisagedPublicationDate BETWEEN " + period.getStartDate() +
+                           " AND " + period.getEndDate();
+               }
+               else
+               {
+                   query = "SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
+                           " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
+                           "FROM  Publication b INNER JOIN b.group g WHERE g.name = \"entity.getName()\" " +
+                           "AND b.lifeCycleState.lifeCycleState = \"state.getName()\" " +
+                           "AND b.envisagedPublicationDate BETWEEN " + period.getStartDate() +
+                           " AND " + period.getEndDate();
+               }
+           }
+
            else if(state == null && type != null && period != null)
-           {}
+           {
+               if("person".equalsIgnoreCase(entity.getType()))
+               {
+                   query = "SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
+                           " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
+                           "FROM  Publication b INNER JOIN b.authors p WHERE p.firstNames = \"entity.getName()\" " +
+                           "AND b.publicationType.name = \"type.getName()\"" +
+                           "AND b.envisagedPublicationDate BETWEEN " + period.getStartDate() +
+                           " AND " + period.getEndDate();
+               }
+               else
+               {
+                   query = "SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
+                           " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
+                           "FROM  Publication b INNER JOIN b.group g WHERE g.name = \"entity.getName()\" " +
+                           "AND b.publicationType.name = \"type.getName()\"" +
+                           "AND b.envisagedPublicationDate BETWEEN " + period.getStartDate() +
+                           " AND " + period.getEndDate();
+               }
+           }
+           //nothing is null
             else
            {
-               //Todo: implement this part for period
+               if("person".equalsIgnoreCase(entity.getType()))
+               {
+                   query = "SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
+                           " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
+                           "FROM  Publication b INNER JOIN b.authors p WHERE p.firstNames = \"entity.getName()\" " +
+                           "AND b.publicationType.name = \"type.getName()\"" +
+                           "AND b.lifeCycleState.lifeCycleState = \"state.getName()\" " +
+                           "AND b.envisagedPublicationDate BETWEEN " + period.getStartDate() +
+                           " AND " + period.getEndDate();
+               }
+               else
+               {
+                   query = "SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
+                           " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
+                           "FROM  Publication b INNER JOIN b.group g WHERE g.name = \"entity.getName()\" " +
+                           "AND b.publicationType.name = \"type.getName()\"" +
+                           "AND b.lifeCycleState.lifeCycleState = \"state.getName()\" " +
+                           "AND b.envisagedPublicationDate BETWEEN " + period.getStartDate() +
+                           " AND " + period.getEndDate();
+               }
            }
         }
         //entity is null
@@ -200,68 +261,94 @@ public class ReportingImpl implements Reporting
         {
             if(state != null && type == null && period == null)
             {
-                query = "SELECT b.ACCREDITATIONPOINTS AS UNITS, b.TITLE AS TITLE, " +
-                        "b.NAME AS TYPE, b.LIFECYCLESTATE AS STATE " +
-                        "FROM PUBLICATION_PERSON a " +
-                        "JOIN PUBLICATION b on a.PUBLICATION_PUBLICATIONID = b.PUBLICATIONID " +
-                        "JOIN PERSON p ON a.AUTHORS_PERSONID = p.PERSONID JOIN RESEARCHGROUP g ON g.GROUPID = p.GROUP_GROUPID " +
-                        "WHERE b.LIFECYCLESTATE = " + "'"+state.getLifeCycleState() +"'";
+                query =  "SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
+                        " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
+                        "FROM  Publication b WHERE b.lifeCycleState.lifeCycleState = \"state.getLifeCycleState()\"";
             }
             else if(state == null && type != null && period == null)
             {
-                query = "SELECT b.ACCREDITATIONPOINTS AS UNITS, b.TITLE AS TITLE, " +
-                        "b.NAME AS TYPE, b.LIFECYCLESTATE AS STATE " +
-                        "FROM PUBLICATION_PERSON a " +
-                        "JOIN PUBLICATION b on a.PUBLICATION_PUBLICATIONID = b.PUBLICATIONID " +
-                        "JOIN PERSON p ON a.AUTHORS_PERSONID = p.PERSONID JOIN RESEARCHGROUP g ON g.GROUPID = p.GROUP_GROUPID " +
-                        "WHERE b.NAME = " + "'"+type.getName() +"'";
+                query = "SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
+                        " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
+                        "FROM  Publication b WHERE b.publicationType.name = \"type.getName()\"";
             }
-            //Todo: implement this part for period
+
             else if(state == null && type == null && period != null)
-            {}
+            {
+                query = "SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
+                        " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
+                        "FROM  Publication b WHERE b.envisagedPublicationDate BETWEEN " + period.getStartDate() +
+                        " AND " + period.getEndDate();
+            }
 
             else if(state != null && type != null && period == null)
             {
-                query = "SELECT b.ACCREDITATIONPOINTS AS UNITS, b.TITLE AS TITLE, " +
-                        "b.NAME AS TYPE, b.LIFECYCLESTATE AS STATE " +
-                        "FROM PUBLICATION_PERSON a " +
-                        "JOIN PUBLICATION b on a.PUBLICATION_PUBLICATIONID = b.PUBLICATIONID " +
-                        "JOIN PERSON p ON a.AUTHORS_PERSONID = p.PERSONID JOIN RESEARCHGROUP g ON g.GROUPID = p.GROUP_GROUPID " +
-                        "WHERE b.NAME = " + "'"+type.getName() +"'" +
-                        " AND b.LIFECYCLESTATE = " + "'" + state.getLifeCycleState() + "'";
+                query =  "SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
+                        " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
+                        "FROM  Publication b WHERE b.publicationType.name = \"type.getName()\"" +
+                        "AND b.lifeCycleState.lifeCycleState = \"state.getName()\" ";
             }
-            //Todo: implement this part for period
-            else if(state != null && type == null && period != null){}
 
-            //Todo: implement this part for period
+            else if(state != null && type == null && period != null)
+            {
+                query = "SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
+                        " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
+                        "FROM  Publication b WHERE b.lifeCycleState.lifeCycleState = \"state.getName()\" " +
+                        "AND b.envisagedPublicationDate BETWEEN " + period.getStartDate() +
+                        " AND " + period.getEndDate();
+            }
+
+
             else if(state == null && type != null && period != null)
-            {}
+            {
+                query = "SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
+                        " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
+                        "FROM  Publication b WHERE b.publicationType.name = \"type.getName()\"" +
+                        "AND b.envisagedPublicationDate BETWEEN " + period.getStartDate() +
+                        " AND " + period.getEndDate();
+            }
 
             //If everything is null
             else if(state == null && type == null && period == null)
             {
                 throw new InvalidRequestException();
             }
-            //Todo: implement this part for period
+            //state, type and period are all not null
             else
-            {}
+            {
+                query = "SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
+                        " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
+                        "FROM  Publication b WHERE b.publicationType.name = \"type.getName()\"" +
+                        "AND b.lifeCycleState.lifeCycleState = \"state.getName()\" " +
+                        "AND b.envisagedPublicationDate BETWEEN " + period.getStartDate() +
+                        " AND " + period.getEndDate();
+            }
 
         }
         return query;
     }
+    
+    //==================================================================================================================
+    //==================================================================================================================
+
     @Override
     public GetProgressReportResponse getProgressReport(GetProgressReportRequest request) throws InvalidRequestException {
-         if(request != null)
+        if(request == null){
+            throw new InvalidRequestException();
+        }
+        else if(request.getEntity() == null && request.getPublicationType()==null)
+        {
+            throw new InvalidRequestException();
+        }
+        else
         {
             Query query = entitymanager.createQuery(generateProgressReportQuery(request));
             return buildProgressReport(query);
         }
-        else
-            throw new InvalidRequestException();
+        
     }
        
-    private String generateProgressReportQuery( GetProgressReportRequest request ) throws InvalidRequestException{
-        Entity entity = request.getEntity();
+    private String generateProgressReportQuery( GetProgressReportRequest request ){
+        ReqEntity entity = request.getEntity();
         PublicationType pubtype = request.getPublicationType();
         String query = null;
         
@@ -279,10 +366,12 @@ public class ReportingImpl implements Reporting
         }
         else if(pubtype == null)
         {
+            System.out.println("HERE 1---------------------------------------------------------------");
             String type = entity.getType();
             String name = entity.getName();
             
-            if(type == "group"){
+            if("group".equalsIgnoreCase(type)){
+                System.out.println("HERE 2------------------------------------------------------");
                 
            return "SELECT p.title as TITLE, p.misc as PROGRESS, r.name as RESEARCH_GROUP"
                    +"FROM PUBLICATION p"
@@ -294,23 +383,27 @@ public class ReportingImpl implements Reporting
                    + "GROUP BY p.title" ;
             }
             else {
-                return "SELECT p.title as TITLE, p.misc as PROGRESS, r.name as RESEARCH_GROUP"
-                   +"FROM PUBLICATION p"
-                   +"INNER JOIN PUBLICATION_PERSON s ON p.publicationid = s.publication_publicationid  "
-                   + "INNER JOIN PERSON u ON u.personid = s.authors_personid"
-                   + "INNER JOIN RESEARCHGROUP r ON r.groupid = u.group_groupid"
-                   + "WHERE p.lifecyclestate = 'InProgress'" 
-                   + "AND u.firstnames = '" + name + "'"
-                   + "GROUP BY p.title" ;
+                System.out.println("HERE 3 --------------------------------------------");
+                String r = "SELECT p.title as TITLE, p.misc as PROGRESS, r.name as RESEARCH_GROUP FROM PUBLICATION p INNER JOIN PERSON u.personid INNER JOIN RESEARCHGROUP r.groupid WHERE p.lifecyclestate = 'InProgress' AND u.firstnames = 'Dave' GROUP BY p.title"; 
+                        
+                       
+                return  r;/*"SELECT p.title as TITLE, p.misc as PROGRESS, r.name as RESEARCH_GROUP"
+                   +" FROM PUBLICATION p "
+                   +" INNER JOIN PUBLICATION_PERSON s ON p.publicationid = s.publication_publicationid "
+                   +" INNER JOIN PERSON u ON u.personid = s.authors_personid "
+                   +" INNER JOIN RESEARCHGROUP r ON r.groupid = u.group_groupid "
+                   +" WHERE p.lifecyclestate = 'InProgress' " 
+                   +" AND u.firstnames = '" + name + "' "
+                   +" GROUP BY p.title" ;*/
             }
         }
-        else if(entity != null && pubtype != null)
+        else
         {
             
             String type = entity.getType();
             String name = entity.getName();
             
-            if(type == "group"){
+            if("group".equalsIgnoreCase(type)){
                 
            return "SELECT p.title as TITLE, p.misc as PROGRESS, p.name AS PUBLICATION_TYPE, r.name as RESEARCH_GROUP"
                    +"FROM PUBLICATION p"
@@ -335,7 +428,6 @@ public class ReportingImpl implements Reporting
             }            
         }  
         
-        throw new InvalidRequestException();
     }
     
     private GetProgressReportResponse buildProgressReport(Query q){
@@ -364,4 +456,4 @@ public class ReportingImpl implements Reporting
         }
     }
     
-}
+}  
