@@ -1,6 +1,7 @@
 package com.codinginfinity.research.publication;
 
 import com.codinginfinity.research.people.Person;
+import com.codinginfinity.research.people.ResearchGroup;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -19,7 +20,11 @@ public class Publication implements Serializable {
 	//private com.codinginfinity.research.people.Person author;
 
 	@ManyToMany(targetEntity = Person.class)
-	private List<Person> authors = new ArrayList<>();;
+	private List<Person> authors = new ArrayList<>();
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+//	@JoinColumn(name = "groupID")
+	private ResearchGroup group;
 
 	@Embedded
 	private LifeCycleState lifeCycleState;
@@ -61,6 +66,14 @@ public class Publication implements Serializable {
 
 	public void setAuthors(List<Person> a) {
 		this.authors = a;
+	}
+	
+	public ResearchGroup getGroup() {
+		return group;
+	}
+
+	public void setGroup(ResearchGroup g) {
+		this.group = g;
 	}
 
 	public LifeCycleState getLifeCycleState() {
