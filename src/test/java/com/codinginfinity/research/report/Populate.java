@@ -119,7 +119,7 @@ public class Populate {
 		authors1.add(person1);
 		authors1.add(person2);
 		authors2.add(person3);
-		authors2.add(person2);
+		//authors2.add(person2);
 
 		// Creating Publications
 
@@ -129,6 +129,7 @@ public class Populate {
 
 		publication1.setTitle("Test Publication 1");
 		publication1.setAuthors(authors1);
+		publication1.setGroup(testGroup1);
 
 		LifeCycleState state1 = new LifeCycleState();
 		state1.setLifeCycleState("InProgress");
@@ -158,6 +159,7 @@ public class Populate {
 
 		publication2.setTitle("Test Publication 2");
 		publication2.setAuthors(authors2);
+		publication2.setGroup(testGroup2);
 
 		LifeCycleState state2 = new LifeCycleState();
 		state2.setLifeCycleState("Published");
