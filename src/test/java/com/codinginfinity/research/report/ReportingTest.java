@@ -34,6 +34,8 @@ import com.codinginfinity.research.people.ResearchGroup;
 import com.codinginfinity.research.publication.LifeCycleState;
 import com.codinginfinity.research.publication.Publication;
 import com.codinginfinity.research.publication.PublicationType;
+import java.util.ArrayList;
+import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {ReportingTestConfiguration.class})
@@ -61,6 +63,41 @@ public class ReportingTest {
                
     }
     
+     @Test
+    public void progressReportTest3() throws Exception{
+        progressReportRes = ReportingMock.getProgressReport(GroupEntityProgRequestMock);
+        assertTrue("SVG was printed",progressReportRes.getSVG());
+        assertTrue("PDF was printed",progressReportRes.getPDF());
+        assertTrue("HTML was printed", progressReportRes.getHTML());
+               
+    }
+    
+    @Test
+    public void progressReportTest4() throws Exception{
+        progressReportRes = ReportingMock.getProgressReport(PubTypeProgRequestMock);
+        assertTrue("SVG was printed",progressReportRes.getSVG());
+        assertTrue("PDF was printed",progressReportRes.getPDF());
+        assertTrue("HTML was printed", progressReportRes.getHTML());
+               
+    }
+    
+     @Test
+    public void progressReportTest5() throws Exception{
+        progressReportRes = ReportingMock.getProgressReport(GroupTypeProgRequestMock);
+        assertTrue("SVG was printed",progressReportRes.getSVG());
+        assertTrue("PDF was printed",progressReportRes.getPDF());
+        assertTrue("HTML was printed", progressReportRes.getHTML());
+               
+    }
+    
+     @Test
+    public void progressReportTest6() throws Exception{
+        progressReportRes = ReportingMock.getProgressReport(PersonTypeProgRequestMock);
+        assertTrue("SVG was printed",progressReportRes.getSVG());
+        assertTrue("PDF was printed",progressReportRes.getPDF());
+        assertTrue("HTML was printed", progressReportRes.getHTML());
+               
+    }
     /*@Test
     public void progressReportTest1() throws Exception {
                
@@ -83,6 +120,14 @@ public class ReportingTest {
     private GetProgressReportRequest ErrorProgressReportRequestMock;
     @Inject
     private GetProgressReportRequest PersonEntityRequestMock;
+    @Inject
+    private GetProgressReportRequest GroupEntityProgRequestMock;
+    @Inject 
+    private GetProgressReportRequest PubTypeProgRequestMock;
+    @Inject
+    private GetProgressReportRequest GroupTypeProgRequestMock;
+    @Inject
+    private GetProgressReportRequest PersonTypeProgRequestMock;
     /*
     TO-DO Define the other Mock objects for each test
     */
@@ -95,14 +140,15 @@ public class ReportingTest {
     
     private GetProgressReportResponse progressReportRes;
     private GetAccreditationUnitReportResponse AccUnitReporRes;
-    
+    private EntityManager entitymanager;
+    private EntityManagerFactory emfactory;
     @Before
     public void populateDatabase() 
     {
-      EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("ReportingTestUnit");
-      EntityManager entitymanager = emfactory.createEntityManager();
+        emfactory = Persistence.createEntityManagerFactory("ReportingTestUnit");
+       entitymanager = emfactory.createEntityManager();
 
-      Entitymanager.getTransaction().begin();
+      entitymanager.getTransaction().begin();
 
       //Create com.codinginfinity.research.people.Person objects
 
