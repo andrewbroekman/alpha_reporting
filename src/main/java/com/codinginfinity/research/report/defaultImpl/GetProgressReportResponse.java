@@ -58,7 +58,7 @@ public class GetProgressReportResponse implements Response
 
                exporter.setParameter(JRExporterParameter.JASPER_PRINT, print);
                exporter.setParameter(JRGraphics2DExporterParameter.GRAPHICS_2D, grx);
-               exporter.setParameter(JRExporterParameter.PAGE_INDEX, new Integer(0));
+               exporter.setParameter(JRExporterParameter.PAGE_INDEX, 0);
                exporter.exportReport();
 
                 grx.stream(new FileWriter(new File("reporting.svg")), true);

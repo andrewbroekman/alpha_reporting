@@ -25,6 +25,8 @@ import org.w3c.dom.Document;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import org.apache.batik.svggen.DefaultImageHandler;
+import org.apache.batik.svggen.ImageHandler;
 
 public class GetAccreditationUnitReportResponse implements Response
 {
@@ -39,25 +41,29 @@ public class GetAccreditationUnitReportResponse implements Response
         this.print = print;
     }
 
-    public void getSVG(){
+    public boolean getSVG(){
         try{
             DOMImplementation domImpl = GenericDOMImplementation.getDOMImplementation();
             Document document = domImpl.createDocument(null, "svg", null);
+            ImageHandler v = new DefaultImageHandler();
             SVGGraphics2D grx = new SVGGraphics2D(document);
 
             JRGraphics2DExporter exporter = new JRGraphics2DExporter();
             exporter.setParameter(JRExporterParameter.JASPER_PRINT, print);
             exporter.setParameter(JRGraphics2DExporterParameter.GRAPHICS_2D, grx);
-            exporter.setParameter(JRExporterParameter.PAGE_INDEX, new Integer(0));
+            exporter.setParameter(JRExporterParameter.PAGE_INDEX, 0);
             exporter.exportReport();
 
             grx.stream(new FileWriter(new File("reporting.svg")), true);
         }
-        catch(JRException e){}
-        catch(IOException e){}
+        catch(JRException | IOException e){
+            return false;
+        }
+        
+        return true;
     }
 
-    public void getPDF(){
+    public boolean getPDF(){
         try{
 
             JasperExportManager.exportReportToPdfFile(print, "reporting.pdf");
@@ -65,21 +71,25 @@ public class GetAccreditationUnitReportResponse implements Response
         }
         catch( JRException e){
             System.err.println( "JRException " + e);
+            return false;
         }
+        return true;
 
     }
 
     /**
      *
      */
-    public void getXML(){
+    public boolean getXML(){
         try{
             JasperExportManager.exportReportToXmlFile(print, "reporting.xml", true);
 
         }
         catch( JRException e){
             System.err.println( "JRException " + e);
+            return false;
         }
+        return true;
 
 
     }
@@ -87,14 +97,16 @@ public class GetAccreditationUnitReportResponse implements Response
     /**
      *
      */
-    public void getHTML(){
+    public boolean getHTML(){
         try{
             JasperExportManager.exportReportToHtmlFile(print, "reporting.xml");
 
         }
         catch( JRException e){
             System.err.println( "JRException " + e);
+            return false;
         }
+        return true;
 
     }
 
