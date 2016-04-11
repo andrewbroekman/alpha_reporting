@@ -354,15 +354,9 @@ public class ReportingImpl implements Reporting{
         
         if(entity == null)
         {
-            
-            return "SELECT p.title as TITLE, p.misc as PROGRESS, r.name as RESEARCH_GROUP"
-                   +"FROM PUBLICATION p"
-                   +"INNER JOIN PUBLICATION_PERSON s ON p.publicationid = s.publication_publicationid  "
-                   + "INNER JOIN PERSON u ON u.personid = s.authors_personid"
-                   + "INNER JOIN RESEARCHGROUP r ON r.groupid = u.group_groupid"
-                   + "WHERE p.lifecyclestate = 'InProgress'" 
-                   + "AND p.name = '" + pubtype.getName() + "'"
-                   + "GROUP BY p.title" ;
+            return  "SELECT p.title AS TITLE, p.lifeCycleState.misc AS PROGRESS FROM Publication p "
+                    + "WHERE p.LifeCycleState.lifeCycleState = :inProgress AND p.publicationType = :type";
+           
         }
         else if(pubtype == null)
         {
@@ -373,28 +367,20 @@ public class ReportingImpl implements Reporting{
             if("group".equalsIgnoreCase(type)){
                 System.out.println("HERE 2------------------------------------------------------");
                 
-           return "SELECT p.title as TITLE, p.misc as PROGRESS, r.name as RESEARCH_GROUP"
-                   +"FROM PUBLICATION p"
-                   +"INNER JOIN PUBLICATION_PERSON s ON p.publicationid = s.publication_publicationid  "
-                   + "INNER JOIN PERSON u ON u.personid = s.authors_personid"
-                   + "INNER JOIN RESEARCHGROUP r ON r.groupid = u.group_groupid"
-                   + "WHERE p.lifecyclestate = 'InProgress'" 
-                   + "AND r.name = '" + name + "'"
-                   + "GROUP BY p.title" ;
+               return  "SELECT p.title AS TITLE, p.lifeCycleState.misc AS PROGRESS FROM Publication p "
+                       +"INNER JOIN p.group g WHERE g.name = :group "
+                       +"AND p.LifeCycleState.lifeCycleState = :inProgress";
+           
             }
             else {
                 System.out.println("HERE 3 --------------------------------------------");
                 String r = "SELECT p.title as TITLE, p.misc as PROGRESS, r.name as RESEARCH_GROUP FROM PUBLICATION p INNER JOIN PERSON u.personid INNER JOIN RESEARCHGROUP r.groupid WHERE p.lifecyclestate = 'InProgress' AND u.firstnames = 'Dave' GROUP BY p.title"; 
                         
-                       
-                return  r;/*"SELECT p.title as TITLE, p.misc as PROGRESS, r.name as RESEARCH_GROUP"
-                   +" FROM PUBLICATION p "
-                   +" INNER JOIN PUBLICATION_PERSON s ON p.publicationid = s.publication_publicationid "
-                   +" INNER JOIN PERSON u ON u.personid = s.authors_personid "
-                   +" INNER JOIN RESEARCHGROUP r ON r.groupid = u.group_groupid "
-                   +" WHERE p.lifecyclestate = 'InProgress' " 
-                   +" AND u.firstnames = '" + name + "' "
-                   +" GROUP BY p.title" ;*/
+                   return  "SELECT p.title AS TITLE, p.lifeCycleState.misc AS PROGRESS FROM Publication p "
+                       +"INNER JOIN p.authors a WHERE a.firstNames = :firstnames "
+                       +"AND p.LifeCycleState.lifeCycleState = :inProgress";
+                   
+                
             }
         }
         else
@@ -405,26 +391,16 @@ public class ReportingImpl implements Reporting{
             
             if("group".equalsIgnoreCase(type)){
                 
-           return "SELECT p.title as TITLE, p.misc as PROGRESS, p.name AS PUBLICATION_TYPE, r.name as RESEARCH_GROUP"
-                   +"FROM PUBLICATION p"
-                   +"INNER JOIN PUBLICATION_PERSON s ON p.publicationid = s.publication_publicationid  "
-                   + "INNER JOIN PERSON u ON u.personid = s.authors_personid"
-                   + "INNER JOIN RESEARCHGROUP r ON r.groupid = u.group_groupid"
-                   + "WHERE p.lifecyclestate = 'InProgress'" 
-                    + "AND p.name = '" + pubtype.getName() + "'"
-                   + "AND r.name = '" + name + "'"
-                   + "GROUP BY p.title" ;
+           return  "SELECT p.title AS TITLE, p.lifeCycleState.misc AS PROGRESS FROM Publication p "
+                       +"INNER JOIN p.group g WHERE g.name = :groupname "
+                       +"AND p.LifeCycleState.lifeCycleState = :inProgress AND p.publicationType.name = :type";
             }
             else {
-                return "SELECT p.title as TITLE, p.misc as PROGRESS, r.name as RESEARCH_GROUP"
-                   +"FROM PUBLICATION p"
-                   +"INNER JOIN PUBLICATION_PERSON s ON p.publicationid = s.publication_publicationid  "
-                   + "INNER JOIN PERSON u ON u.personid = s.authors_personid"
-                   + "INNER JOIN RESEARCHGROUP r ON r.groupid = u.group_groupid"
-                   + "WHERE p.lifecyclestate = 'InProgress'" 
-                    + "AND p.name = '" + pubtype.getName() + "'"
-                   + "AND u.firstnames = '" + name + "'"
-                   + "GROUP BY p.title" ;
+                
+                return  "SELECT p.title AS TITLE, p.lifeCycleState.misc AS PROGRESS FROM Publication p "
+                       +"INNER JOIN p.authors a WHERE a.firstNames = :firstnames "
+                       +"AND p.LifeCycleState.lifeCycleState = :inProgress AND p.publicationType.name = :type";
+                
             }            
         }  
         
