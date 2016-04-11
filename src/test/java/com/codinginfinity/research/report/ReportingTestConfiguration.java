@@ -50,12 +50,51 @@ class ReportingTestConfiguration {
      * @return 
      */
     @Bean
-    public GetProgressReportRequest PersonEntityRequestMock()
+    public GetProgressReportRequest PersonEntityProgRequestMock()
     {
         ReqEntity e  = new ReqEntity("PERSON", "Dave");
                
         return new GetProgressReportRequest(e);
     }
     
+    @Bean
+    public GetProgressReportRequest GroupEntityProgRequestMock()
+    {
+        ReqEntity e  = new ReqEntity("GROUP", "Test Research Group 1");
+               
+        return new GetProgressReportRequest(e);
+    }
+    
+    @Bean
+    public GetProgressReportRequest PubTypeProgRequestMock()
+    {
+        PublicationType t = new PublicationType();
+        t.setName("Journal");
+        t.setAccreditationPoints(1.0); 
+               
+        return new GetProgressReportRequest(t);
+    }
+    
+    @Bean
+    public GetProgressReportRequest GroupTypeProgRequestMock()
+    {
+        ReqEntity e  = new ReqEntity("GROUP", "Test Research Group 2");
+        PublicationType t = new PublicationType();
+        t.setName("Journal");
+        t.setAccreditationPoints(1.0); 
+               
+        return new GetProgressReportRequest(e,t);
+    }
+    
+     @Bean
+     public GetProgressReportRequest PersonTypeProgRequestMock()
+    {
+        ReqEntity e  = new ReqEntity("PERSON", "sally");
+        PublicationType t = new PublicationType();
+        t.setName("Journal");
+        t.setAccreditationPoints(1.0); 
+               
+        return new GetProgressReportRequest(e,t);
+    }
     
 }
