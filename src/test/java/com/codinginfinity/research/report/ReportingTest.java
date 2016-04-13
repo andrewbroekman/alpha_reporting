@@ -30,11 +30,13 @@ import javax.persistence.*;
 import java.text.*;
 import java.util.Date;
 import com.codinginfinity.research.people.Person;
+import com.codinginfinity.research.people.ReqEntity;
 import com.codinginfinity.research.people.ResearchGroup;
 import com.codinginfinity.research.publication.LifeCycleState;
 import com.codinginfinity.research.publication.Publication;
 import com.codinginfinity.research.publication.PublicationType;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -47,7 +49,8 @@ public class ReportingTest {
      */
     @Test(expected = InvalidRequestException.class)
     public void progressReportTest1() throws Exception{
-        ReportingMock.getProgressReport(ErrorProgressReportRequestMock);
+        
+        Report.getProgressReport(new GetProgressReportRequest());
     }
     
     /**
@@ -56,99 +59,59 @@ public class ReportingTest {
      */
     @Test
     public void progressReportTest2() throws Exception{
-        progressReportRes = ReportingMock.getProgressReport(PersonEntityRequestMock);
-        assertTrue("SVG was printed",progressReportRes.getSVG());
-        assertTrue("PDF was printed",progressReportRes.getPDF());
-        assertTrue("HTML was printed", progressReportRes.getHTML());
+        
+        for (GetProgressReportRequest test : progReportTestData){
+            progressReportRes = Report.getProgressReport(test);
+            assertTrue("SVG was printed",progressReportRes.getSVG());
+            assertTrue("PDF was printed",progressReportRes.getPDF());
+            assertTrue("HTML was printed", progressReportRes.getHTML());
+        }
                
     }
-    
-     @Test
-    public void progressReportTest3() throws Exception{
-        progressReportRes = ReportingMock.getProgressReport(GroupEntityProgRequestMock);
-        assertTrue("SVG was printed",progressReportRes.getSVG());
-        assertTrue("PDF was printed",progressReportRes.getPDF());
-        assertTrue("HTML was printed", progressReportRes.getHTML());
-               
-    }
-    
-    @Test
-    public void progressReportTest4() throws Exception{
-        progressReportRes = ReportingMock.getProgressReport(PubTypeProgRequestMock);
-        assertTrue("SVG was printed",progressReportRes.getSVG());
-        assertTrue("PDF was printed",progressReportRes.getPDF());
-        assertTrue("HTML was printed", progressReportRes.getHTML());
-               
-    }
-    
-     @Test
-    public void progressReportTest5() throws Exception{
-        progressReportRes = ReportingMock.getProgressReport(GroupTypeProgRequestMock);
-        assertTrue("SVG was printed",progressReportRes.getSVG());
-        assertTrue("PDF was printed",progressReportRes.getPDF());
-        assertTrue("HTML was printed", progressReportRes.getHTML());
-               
-    }
-    
-     @Test
-    public void progressReportTest6() throws Exception{
-        progressReportRes = ReportingMock.getProgressReport(PersonTypeProgRequestMock);
-        assertTrue("SVG was printed",progressReportRes.getSVG());
-        assertTrue("PDF was printed",progressReportRes.getPDF());
-        assertTrue("HTML was printed", progressReportRes.getHTML());
-               
-    }
-    /*@Test
-    public void progressReportTest1() throws Exception {
-               
-        
-        
-        res = ReportingMock.getProgressReport(ErrorRequestMock);
-        assertTrue("SVG was printed",res.getSVG());
-        assertTrue("PDF was printed",res.getPDF());
-        assertTrue("HTML was printed", res.getHTML());
-        
-        
-       
-        
-    }*/
+    @Inject
+    private ReqEntity groupEntity;
     
     @Inject
-    private ReportingImpl ReportingMock;
-    //===========================================================================================
-    @Inject
-    private GetProgressReportRequest ErrorProgressReportRequestMock;
-    @Inject
-    private GetProgressReportRequest PersonEntityRequestMock;
-    @Inject
-    private GetProgressReportRequest GroupEntityProgRequestMock;
+    private ReqEntity personEntity;
+    
+    
     @Inject 
-    private GetProgressReportRequest PubTypeProgRequestMock;
-    @Inject
-    private GetProgressReportRequest GroupTypeProgRequestMock;
-    @Inject
-    private GetProgressReportRequest PersonTypeProgRequestMock;
-    /*
-    TO-DO Define the other Mock objects for each test
-    */
+    private com.codinginfinity.research.report.defaultImpl.PublicationType PubType;
+    
+    
+    private ReportingImpl Report;
+    
     //==========================================================================================
-    @Inject
-    private GetAccreditationUnitReportRequest ErrorAccUnitReportRequestMock;
-    /*
-    TO-DO Define the other Mock objects for each test
-    */
+    private LinkedList<GetProgressReportRequest> progReportTestData;
+    private LinkedList<GetAccreditationUnitReportRequest> accReportTestData;
     
     private GetProgressReportResponse progressReportRes;
     private GetAccreditationUnitReportResponse AccUnitReporRes;
+    
     private EntityManager entitymanager;
     private EntityManagerFactory emfactory;
+    
     @Before
     public void populateDatabase() 
     {
+        
+               
+        progReportTestData = new LinkedList<GetProgressReportRequest>();
+        accReportTestData = new LinkedList<GetAccreditationUnitReportRequest> ();
+        
+        progReportTestData.add(new GetProgressReportRequest(groupEntity));
+        progReportTestData.add(new GetProgressReportRequest(personEntity));        
+        progReportTestData.add(new GetProgressReportRequest(PubType));        
+        progReportTestData.add(new GetProgressReportRequest(groupEntity, PubType));
+        progReportTestData.add(new GetProgressReportRequest(personEntity, PubType));
+        
+        
+        
         emfactory = Persistence.createEntityManagerFactory("ReportingTestUnit");
-       entitymanager = emfactory.createEntityManager();
+        entitymanager = emfactory.createEntityManager();
+        Report = new ReportingImpl(emfactory, entitymanager);
 
-      entitymanager.getTransaction().begin();
+        entitymanager.getTransaction().begin();
 
       //Create com.codinginfinity.research.people.Person objects
 
@@ -280,7 +243,7 @@ public class ReportingTest {
       publication1.setLifeCycleState(state1);
 
       PublicationType pubType1 = new PublicationType();
-      pubType1.setName("High-Impact Journal");
+      pubType1.setName("Journal");
       pubType1.setAccreditationPoints(1.0);
 
       publication1.setPublicationType(pubType1);
