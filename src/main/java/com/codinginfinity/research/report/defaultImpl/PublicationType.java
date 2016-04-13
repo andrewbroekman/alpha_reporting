@@ -1,16 +1,22 @@
-package com.codinginfinity.research.publication;
+package com.codinginfinity.research.report.defaultImpl;
 
-import java.io.Serializable;
-import javax.persistence.*;
 
-//Embedded class used in com.codinginfinity.research.publication.Publication.
-@Embeddable
-public class PublicationType implements Serializable {
-	@Column(nullable = false)
+public class PublicationType {
+	
 	private String name;
 
-	@Column(nullable = false)
 	private double accreditationPoints;
+
+        public PublicationType(String name, double accreditationPoints) {
+            this.name = name;
+            this.accreditationPoints = accreditationPoints;
+        }
+
+    PublicationType() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+        
+        
 
 	public String getName() {
 		return name;
