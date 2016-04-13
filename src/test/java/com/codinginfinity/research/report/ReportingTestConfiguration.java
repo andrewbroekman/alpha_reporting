@@ -1,12 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.codinginfinity.research.report;
 
+import com.codinginfinity.research.report.defaultImpl.PublicationType;
 import com.codinginfinity.research.people.ReqEntity;
-import com.codinginfinity.research.publication.PublicationType;
 import com.codinginfinity.research.report.defaultImpl.ReportingImpl;
 import com.codinginfinity.research.report.defaultImpl.GetProgressReportRequest;
 import com.codinginfinity.research.report.defaultImpl.GetAccreditationUnitReportRequest;
@@ -15,23 +10,39 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  *
- * @author Nsovo
+ * @author COS301 Reporting Alpha Team
  */
 @Configuration
 class ReportingTestConfiguration {
-    @Bean
+    @Bean 
+    public ReqEntity groupEntity(){
+        return new ReqEntity("GROUP", "Test Research Group 1");
+    
+    }
+       
+    @Bean 
+    public ReqEntity personEntity(){
+        return new ReqEntity("PERSON", "Paul");
+    
+    }
+    
+   @Bean
+    public PublicationType PubType(){
+        return new PublicationType("Journal", 1.0);
+    }
+   /* @Bean
     public ReportingImpl ReportingMock(){        
         return new ReportingImpl();
-    }
+    }*/
     
     /**
      * 
      * @return 
      */
-    @Bean
+   /* @Bean
     public GetAccreditationUnitReportRequest ErrorAccUnitReportRequestMock(){        
         return new GetAccreditationUnitReportRequest();
-    }
+    }*/
     
     //============================================================================================
     //============================================================================================
@@ -40,16 +51,16 @@ class ReportingTestConfiguration {
      * 
      * @return 
      */
-    @Bean
+   /* @Bean
     public GetProgressReportRequest ErrorProgressReportRequestMock(){        
         return new GetProgressReportRequest();
     }
-    
+    */
     /**
      * 
      * @return 
      */
-    @Bean
+   /* @Bean
     public GetProgressReportRequest PersonEntityProgRequestMock()
     {
         ReqEntity e  = new ReqEntity("PERSON", "Dave");
@@ -96,6 +107,7 @@ class ReportingTestConfiguration {
                
         return new GetProgressReportRequest(e,t);
     }
+    */
 
     //--------------------------ACCREDITATION UNIT MOCK OBJECTS--------------------------\\
 
@@ -104,19 +116,21 @@ class ReportingTestConfiguration {
      * 
      * @return Person Entity Mock Object
      */
-    @Bean
+    /*@Bean
     public GetAccreditationUnitReportRequest aPersonEntityRequestMock1()
     {
         ReqEntity e  = new ReqEntity("PERSON", "Dave");
       return new GetAccreditationUnitReportRequest(e, null, null, null);
       
     }
-
+*/
     /**
      *
      *
      * @return AccreditationUnit Person and Period Mock object
      */
+    
+    /*
     @Bean
     public GetAccreditationUnitReportRequest aPersonPeriodRequestMock()
     {
@@ -138,12 +152,12 @@ class ReportingTestConfiguration {
 
         return new GetAccreditationUnitReportRequest(e, null, null, p);
     }
-
+*/
     /**
      *
      * @return AccreditationUnit Person and State Mock object
      */
-    @Bean
+    /*@Bean
     public GetAccreditationUnitReportRequest aPersonStateRequestMock()
     {
         ReqEntity e = new ReqEntity("Person", "Paul");
@@ -151,25 +165,25 @@ class ReportingTestConfiguration {
         state.setLifeCycleState("InProgress");
         return new GetAccreditationUnitReportRequest(e, state, null, null);
     }
-
+*/
     /**
      *
      * @return AccreditationUnit Person and Type Mock object
      */
-    @Bean
+   /* @Bean
     public GetAccreditationUnitReportRequest aPersonTypeRequestMock()
     {
         ReqEntity e = new ReqEntity("Person", "Sally");
         PublicationType type = new PublicationType();
         type.setName("High-Impact Journal");
         return new GetAccreditationUnitReportRequest(e, null, type, null);
-    }
+    }*/
 
     /**
      *
      * @return AccreditationUnit Person,State and Type Mock object
      */
-    @Bean
+    /*@Bean
     public GetAccreditationUnitReportRequest aPersonStateTypeRequestMock()
     {
         ReqEntity e = new ReqEntity("Person", "Paul");
@@ -179,12 +193,12 @@ class ReportingTestConfiguration {
         state.setLifeCycleState("Published");
         return new GetAccreditationUnitReportRequest(e, state, type, null);
     }
-
+*/
     /**
      *
      * @return AccreditationUnit Person,State and Period Mock object
      */
-    @Bean
+  /*  @Bean
     public GetAccreditationUnitReportRequest aPersonStatePeriodRequestMock()
     {
         ReqEntity e = new ReqEntity("Person", "Dave");
@@ -208,12 +222,12 @@ class ReportingTestConfiguration {
 
         return new GetAccreditationUnitReportRequest(e, state, null, p);
     }
-
+*/
     /**
      *
      * @return AccreditationUnit Person,Type and Period Mock object
      */
-    @Bean
+  /*  @Bean
     public GetAccreditationUnitReportRequest aPersonTypePeriodRequestMock()
     {
         ReqEntity e = new ReqEntity("Person", "Dave");
@@ -238,12 +252,12 @@ class ReportingTestConfiguration {
 
         return new GetAccreditationUnitReportRequest(e, null, type, p);
     }
-
+*/
     /**
      *
      * @return AccreditationUnit Person,State,Type and Period Mock object
      */
-    @Bean
+  /*  @Bean
     public GetAccreditationUnitReportRequest aPersonStateTypePeriodRequestMock()
     {
         ReqEntity e = new ReqEntity("Person", "Sally");
@@ -269,27 +283,27 @@ class ReportingTestConfiguration {
 
         return new GetAccreditationUnitReportRequest(e, state, type, p);
     }
-
+*/
     /////////////////////////////////////Group Entity/////////////////////////////////////////
 
     /**
      *
      * @return Group Mock object
      */
-    @Bean
+  /*  @Bean
     public GetAccreditationUnitReportRequest aGroupEntityRequestMock1()
     {
         ReqEntity e  = new ReqEntity("Group", "Test Research Group 1");
         return new GetAccreditationUnitReportRequest(e, null, null, null);
 
     }
-
+*/
     /**
      *
      *
      * @return AccreditationUnit Group and Period Mock object
      */
-    @Bean
+/*    @Bean
     public GetAccreditationUnitReportRequest aGroupPeriodRequestMock()
     {
         ReqEntity e = new ReqEntity("Group", "Test Research Group 2");
@@ -310,12 +324,12 @@ class ReportingTestConfiguration {
 
         return new GetAccreditationUnitReportRequest(e, null, null, p);
     }
-
+*/
     /**
      *
      * @return AccreditationUnit Group and State Mock object
      */
-    @Bean
+  /*  @Bean
     public GetAccreditationUnitReportRequest aGroupStateRequestMock()
     {
         ReqEntity e = new ReqEntity("Group", "Test Research Group 1");
@@ -323,12 +337,12 @@ class ReportingTestConfiguration {
         state.setLifeCycleState("Published");
         return new GetAccreditationUnitReportRequest(e, state, null, null);
     }
-
+*/
     /**
      *
      * @return AccreditationUnit Group and Type Mock object
      */
-    @Bean
+  /*  @Bean
     public GetAccreditationUnitReportRequest aGroupTypeRequestMock()
     {
         ReqEntity e = new ReqEntity("Group", "Test Research Group 2");
@@ -336,12 +350,12 @@ class ReportingTestConfiguration {
         type.setName("High-Impact Journal");
         return new GetAccreditationUnitReportRequest(e, null, type, null);
     }
-
+*/
     /**
      *
      * @return AccreditationUnit Group,State and Type Mock object
      */
-    @Bean
+  /*  @Bean
     public GetAccreditationUnitReportRequest aGroupStateTypeRequestMock()
     {
         ReqEntity e = new ReqEntity("Group", "Test Research Group 1");
@@ -351,12 +365,12 @@ class ReportingTestConfiguration {
         state.setLifeCycleState("Published");
         return new GetAccreditationUnitReportRequest(e, state, type, null);
     }
-
+*/
     /**
      *
      * @return AccreditationUnit Group,State and Period Mock object
      */
-    @Bean
+  /*  @Bean
     public GetAccreditationUnitReportRequest aGroupStatePeriodRequestMock()
     {
         ReqEntity e = new ReqEntity("Group", "Test Research Group 2");
@@ -380,12 +394,12 @@ class ReportingTestConfiguration {
 
         return new GetAccreditationUnitReportRequest(e, state, null, p);
     }
-
+*/
     /**
      *
      * @return AccreditationUnit Group,Type and Period Mock object
      */
-    @Bean
+  /*  @Bean
     public GetAccreditationUnitReportRequest aGroupTypePeriodRequestMock()
     {
         ReqEntity e = new ReqEntity("Group", "Test Research Group 1");
@@ -410,12 +424,12 @@ class ReportingTestConfiguration {
 
         return new GetAccreditationUnitReportRequest(e, null, type, p);
     }
-
+*/
     /**
      *
      * @return AccreditationUnit Group,State,Type and Period Mock object
      */
-    @Bean
+  /*  @Bean
     public GetAccreditationUnitReportRequest aGroupStateTypePeriodRequestMock()
     {
         ReqEntity e = new ReqEntity("Group", "Sally");
@@ -441,25 +455,25 @@ class ReportingTestConfiguration {
 
         return new GetAccreditationUnitReportRequest(e, state, type, p);
     }
-
+*/
     ///////////////////////////////////No Entity//////////////////////////////////////
 
     /**
      * @return null mock object
      */
-    @Bean
+  /*  @Bean
     public GetAccreditationUnitReportRequest aNullRequestMock()
     {
         return new GetAccreditationUnitReportRequest(null, null, null, null);
     }
-
+*/
 
     /**
      *
      *
      * @return AccreditationUnit Period Mock object
      */
-    @Bean
+  /*  @Bean
     public GetAccreditationUnitReportRequest aPeriodRequestMock()
     {
         SimpleDateFormat tmp = new SimpleDateFormat("yyyy-MM-dd");
@@ -479,36 +493,36 @@ class ReportingTestConfiguration {
 
         return new GetAccreditationUnitReportRequest(null, null, null, p);
     }
-
+*/
     /**
      *
      * @return AccreditationUnit State Mock object
      */
-    @Bean
+  /*  @Bean
     public GetAccreditationUnitReportRequest aStateRequestMock()
     {
         LifeCycleState state = new LifeCycleState();
         state.setLifeCycleState("Published");
         return new GetAccreditationUnitReportRequest(null,state, null, null);
     }
-
+*/
     /**
      *
      * @return AccreditationUnit Type Mock object
      */
-    @Bean
+  /*  @Bean
     public GetAccreditationUnitReportRequest aTypeRequestMock()
     {
         PublicationType type = new PublicationType();
         type.setName("High-Impact Journal");
         return new GetAccreditationUnitReportRequest(null, null, type, null);
     }
-
+*/
     /**
      *
      * @return AccreditationUnit State and Type Mock object
      */
-    @Bean
+  /*  @Bean
     public GetAccreditationUnitReportRequest aStateTypeRequestMock()
     {
         PublicationType type = new PublicationType();
@@ -517,12 +531,12 @@ class ReportingTestConfiguration {
         state.setLifeCycleState("Published");
         return new GetAccreditationUnitReportRequest(null, state, type, null);
     }
-
+*/
     /**
      *
      * @return AccreditationUnit State and Period Mock object
      */
-    @Bean
+  /*  @Bean
     public GetAccreditationUnitReportRequest aStatePeriodRequestMock()
     {
         LifeCycleState state = new LifeCycleState();
@@ -545,12 +559,12 @@ class ReportingTestConfiguration {
 
         return new GetAccreditationUnitReportRequest(null, state, null, p);
     }
-
+*/
     /**
      *
      * @return AccreditationUnit Type and Period Mock object
      */
-    @Bean
+  /*  @Bean
     public GetAccreditationUnitReportRequest aTypePeriodRequestMock()
     {
         PublicationType type = new PublicationType();
@@ -574,12 +588,12 @@ class ReportingTestConfiguration {
 
         return new GetAccreditationUnitReportRequest(null, null, type, p);
     }
-
+*/
     /**
      *
      * @return AccreditationUnit State,Type and Period Mock object
      */
-    @Bean
+  /*  @Bean
     public GetAccreditationUnitReportRequest aStateTypePeriodRequestMock()
     {
         PublicationType type = new PublicationType();
@@ -604,6 +618,6 @@ class ReportingTestConfiguration {
 
         return new GetAccreditationUnitReportRequest(null, state, type, p);
     }
-    
+    */
     
 }
