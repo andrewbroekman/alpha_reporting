@@ -11,7 +11,6 @@
 package com.codinginfinity.research.report.defaultImpl;
 
 import com.codinginfinity.research.report.Request;
-import com.codinginfinity.research.publication.*;
 import com.codinginfinity.research.people.ReqEntity;
 
 public class GetProgressReportRequest implements Request
