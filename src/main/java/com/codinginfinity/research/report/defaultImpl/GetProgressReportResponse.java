@@ -64,6 +64,7 @@ public class GetProgressReportResponse implements Response
                 grx.stream(new FileWriter(new File("reporting.svg")), true);
         }
         catch(JRException | IOException e){
+            System.out.println( e);
             return false;
         }
         return true;             
@@ -80,7 +81,7 @@ public class GetProgressReportResponse implements Response
            
         }
         catch( JRException e){
-            System.err.println( "JRException " + e);
+            System.out.println( "JRException " + e);
             return false;
         }
         return true;
@@ -109,7 +110,7 @@ public class GetProgressReportResponse implements Response
      */
     public boolean getHTML(){
         try{ 
-            JasperExportManager.exportReportToHtmlFile(print, "reporting.xml");
+            JasperExportManager.exportReportToHtmlFile(print, "reporting.html");
             
         }
         catch( JRException e){
