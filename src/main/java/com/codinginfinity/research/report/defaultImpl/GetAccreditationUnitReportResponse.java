@@ -18,15 +18,13 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.export.JRGraphics2DExporter;
 import net.sf.jasperreports.engine.export.JRGraphics2DExporterParameter;
 import org.apache.batik.dom.GenericDOMImplementation;
-import org.apache.batik.svggen.SVGGraphics2D;
+import org.apache.batik.svggen.*;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import org.apache.batik.svggen.DefaultImageHandler;
-import org.apache.batik.svggen.ImageHandler;
 
 public class GetAccreditationUnitReportResponse implements Response
 {
@@ -46,7 +44,8 @@ public class GetAccreditationUnitReportResponse implements Response
             DOMImplementation domImpl = GenericDOMImplementation.getDOMImplementation();
             Document document = domImpl.createDocument(null, "svg", null);
             ImageHandler v = new DefaultImageHandler();
-            SVGGraphics2D grx = new SVGGraphics2D(document);
+            ExtensionHandler ex = new DefaultExtensionHandler();
+            SVGGraphics2D grx = new SVGGraphics2D(document,v,ex,true);
 
             JRGraphics2DExporter exporter = new JRGraphics2DExporter();
             exporter.setParameter(JRExporterParameter.JASPER_PRINT, print);
@@ -54,7 +53,7 @@ public class GetAccreditationUnitReportResponse implements Response
             exporter.setParameter(JRExporterParameter.PAGE_INDEX, 0);
             exporter.exportReport();
 
-            grx.stream(new FileWriter(new File("reporting.svg")), true);
+            grx.stream(new FileWriter(new File("AccreditationUnitReport.svg")), true);
         }
         catch(JRException | IOException e){
             return false;
@@ -66,7 +65,7 @@ public class GetAccreditationUnitReportResponse implements Response
     public boolean getPDF(){
         try{
 
-            JasperExportManager.exportReportToPdfFile(print, "reporting.pdf");
+            JasperExportManager.exportReportToPdfFile(print, "AccreditationUnitReport.pdf");
 
         }
         catch( JRException e){
@@ -80,18 +79,18 @@ public class GetAccreditationUnitReportResponse implements Response
     /**
      *
      */
-    public boolean getXML(){
+    public String getXML(){
+
+        String result="";
         try{
-            JasperExportManager.exportReportToXmlFile(print, "reporting.xml", true);
+            result= JasperExportManager.exportReportToXml(print);
 
         }
         catch( JRException e){
             System.err.println( "JRException " + e);
-            return false;
         }
-        return true;
 
-
+        return result;
     }
 
     /**
@@ -99,7 +98,7 @@ public class GetAccreditationUnitReportResponse implements Response
      */
     public boolean getHTML(){
         try{
-            JasperExportManager.exportReportToHtmlFile(print, "reporting.xml");
+            JasperExportManager.exportReportToHtmlFile(print, "AccreditationUnitReport.xml");
 
         }
         catch( JRException e){
