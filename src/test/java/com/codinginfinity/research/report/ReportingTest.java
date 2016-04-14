@@ -39,7 +39,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -68,6 +68,7 @@ public class ReportingTest {
             assertTrue("SVG was printed",AccUnitReporRes.getSVG());
             assertTrue("PDF was printed",AccUnitReporRes.getPDF());
             assertTrue("HTML was printed", AccUnitReporRes.getHTML());
+            assertNotEquals("Checks if the string returned is not empty", "", AccUnitReporRes.getXML() );
         }
     }
 
@@ -93,6 +94,7 @@ public class ReportingTest {
             assertTrue("SVG was printed",progressReportRes.getSVG());
             assertTrue("PDF was printed",progressReportRes.getPDF());
             assertTrue("HTML was printed", progressReportRes.getHTML());
+            assertNotEquals("Checks if the string returned is not empty", "", progressReportRes.getXML() );
         }
                
     }
