@@ -9,21 +9,26 @@
 */
 
 package com.codinginfinity.research.report.defaultImpl;
-
-
-
 import com.codinginfinity.research.publication.*;
-import com.codinginfinity.research.people.Entity;
+import com.codinginfinity.research.people.ReqEntity;
 import com.codinginfinity.research.report.Request;
 
 public class GetAccreditationUnitReportRequest implements Request
 {
 	private static final long serialVersionUID = 1L;
-	Entity requestedEntity;
+	ReqEntity requestedEntity;
 	LifeCycleState requestedLifeCycleState;
 	PublicationType requestedPublicationType;
 	Period requestedPeriod;
-	public GetAccreditationUnitReportRequest(Entity entity, LifeCycleState state,PublicationType type, Period
+        public GetAccreditationUnitReportRequest(){
+            super();
+            this.requestedEntity = null;
+            this.requestedPublicationType = null;
+            this.requestedLifeCycleState=null;
+            this.requestedPeriod=null;
+        }
+        
+	public GetAccreditationUnitReportRequest(ReqEntity entity, LifeCycleState state,PublicationType type, Period
 			period)
 	{
 		super();
@@ -34,37 +39,60 @@ public class GetAccreditationUnitReportRequest implements Request
 	}
 
 
-
-	public Entity getEntity() {
+        /**
+         * Function for the return of the entity for the accreditation request object
+         * @return 
+         */
+	public ReqEntity getEntity() {
 		return requestedEntity;
 	}
-
-	public void setEntity(Entity entity) {
+        /**
+         * Function for setting of the entity for the accreditation request object
+         * @param entity 
+         */
+	public void setEntity(ReqEntity entity) {
 		this.requestedEntity = entity;
 	}
-
+        /**
+         * Function to return the lifeCycleState of the accreditation request object
+         * @return 
+         */
 	public LifeCycleState getLifeCycleState(){
 		return requestedLifeCycleState;
 	}
-
+        /**
+         * Function for setting the life cycle state of the accreditation request object 
+         * @param state 
+         */
 	public void setLifeCycleState(LifeCycleState state) {
 		this.requestedLifeCycleState=state;
 	}
-
+        /**
+         * Function for return the publication type for the accreditation request object
+         * @return 
+         */
 	public PublicationType getPublicationType() {
 		return requestedPublicationType;
 	}
-
+        /**
+         * Function for setting the publication type for the accreditation request object
+         * @param type 
+         */
 	public void setPublicationType(PublicationType type) {
 		this.requestedPublicationType = type;
 	}
-
+        /**
+         * Function for returning the period of the accreditation request object
+         * @return 
+         */
 	public Period getPeriod(){
 		return this.requestedPeriod;
 	}
-
+        /**
+         * Function for setting the period of the accreditation request object 
+         * @param period 
+         */
 	public void setPeriod(Period period){
 		this.requestedPeriod=period;
 	}
-
 }

@@ -9,13 +9,6 @@
 */
 
 package com.codinginfinity.research.report.defaultImpl;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.OutputStream;
-
 import com.codinginfinity.research.report.Response;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporterParameter;
@@ -24,9 +17,13 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.export.JRGraphics2DExporter;
 import net.sf.jasperreports.engine.export.JRGraphics2DExporterParameter;
 import org.apache.batik.dom.GenericDOMImplementation;
-import org.apache.batik.svggen.SVGGraphics2D;
+import org.apache.batik.svggen.*;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class GetProgressReportResponse implements Response
 {
@@ -41,70 +38,86 @@ public class GetProgressReportResponse implements Response
     }
     
     /**
-     * 
+     * This function builds table for an SVG file for the progress report response,
+     * this function is for testing purposes
+     * @return 
      */
-    public void getSVG(){
+    public boolean getSVG(){
+        Document document;
         try{
             DOMImplementation domImpl = GenericDOMImplementation.getDOMImplementation();
-            Document document = domImpl.createDocument(null, "svg", null);
-            SVGGraphics2D grx = new SVGGraphics2D(document);
+                document = domImpl.createDocument(null, "svg", null);
+                ImageHandler v = new DefaultImageHandler();
+                ExtensionHandler ex = new DefaultExtensionHandler();
+                SVGGraphics2D grx = new SVGGraphics2D(document, v, ex, true);
 
-            JRGraphics2DExporter exporter = new JRGraphics2DExporter();
-            exporter.setParameter(JRExporterParameter.JASPER_PRINT, print);
-            exporter.setParameter(JRGraphics2DExporterParameter.GRAPHICS_2D, grx);
-            exporter.setParameter(JRExporterParameter.PAGE_INDEX, new Integer(0));
-            exporter.exportReport();
+                JRGraphics2DExporter exporter = new JRGraphics2DExporter();
 
-            grx.stream(new FileWriter(new File("reporting.svg")), true);
+               exporter.setParameter(JRExporterParameter.JASPER_PRINT, print);
+               exporter.setParameter(JRGraphics2DExporterParameter.GRAPHICS_2D, grx);
+               exporter.setParameter(JRExporterParameter.PAGE_INDEX, 0);
+               exporter.exportReport();
+
+                grx.stream(new FileWriter(new File("ProgressReport.svg")), true);
         }
-        catch(JRException e){}
-        catch(IOException e){}
-        //return svg;        
+        catch(JRException | IOException e){
+            System.out.println( e);
+            return false;
+        }
+        return true;             
     }
     
     /**
-     * 
+     * Function to build table for pdf version of the progress report response
+     * this function is for testing purposes
+     * @return 
      */
-    public void getPDF(){
+    public boolean getPDF(){
         try{ 
             
-            JasperExportManager.exportReportToPdfFile(print, "reporting.pdf");
+            JasperExportManager.exportReportToPdfFile(print, "ProgressReport.pdf");
            
         }
         catch( JRException e){
-            System.err.println( "JRException " + e);
+            System.out.println( "JRException " + e);
+            return false;
         }
-        
+        return true;
         //return pdf;        
     }
     
     /**
-     * 
+     * Function to build table for XML file for progress report response
+     * returns an XML version of the string which can translated to any report response  
+     * @return 
      */
-    public void getXML(){
+    public String getXML(){
+        String result="";
         try{ 
-            JasperExportManager.exportReportToXmlFile(print, "reporting.xml", true);
+            result=JasperExportManager.exportReportToXml(print);
             
         }
         catch( JRException e){
             System.err.println( "JRException " + e);
         }
-        
-       
-        //return xml;        
+        return result;
     }
     
     /**
-     * 
+     * Function to build table for HTML file for progress report response
+     * this function is for testing purposes
+     * @return 
      */
-    public void getHTML(){
+    public boolean getHTML(){
         try{ 
-            JasperExportManager.exportReportToHtmlFile(print, "reporting.xml");
+            JasperExportManager.exportReportToHtmlFile(print, "ProgressReport.html");
             
         }
         catch( JRException e){
             System.err.println( "JRException " + e);
+            return false;
         }
+        return true;
         //return HtmlFile
     }
     

@@ -1,26 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
 <!-- 2016-03-31T11:46:50 -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="jasper_report_template" language="java" pageWidth="842" pageHeight="595" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="3e20851d-b280-46ba-aa05-79a95e38c937">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="jasper_report_template" pageWidth="842" pageHeight="595" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="3e20851d-b280-46ba-aa05-79a95e38c937">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<style name="Title" fontName="Times New Roman" fontSize="50" isBold="true"/>
 	<style name="SubTitle" forecolor="#736343" fontName="Arial" fontSize="18"/>
 	<style name="Column_header" forecolor="#666666" fontName="Arial" fontSize="12" isBold="true"/>
-	<parameter name="DETAILS" class="java.lang.String"/>
-	<queryString>
-		<![CDATA[]]>
-	</queryString>
-	<field name="progress" class="java.lang.Integer">
-		<fieldDescription><![CDATA[progress]]></fieldDescription>
+	<parameter name="REPORT_OWNER" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORT_TYPE" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<field name="PROGRESS" class="java.lang.String">
+		<fieldDescription><![CDATA[PROGRESS]]></fieldDescription>
 	</field>
-	<field name="title" class="java.lang.String">
-		<fieldDescription><![CDATA[title]]></fieldDescription>
+	<field name="TITLE" class="java.lang.String">
+		<fieldDescription><![CDATA[TITLE]]></fieldDescription>
 	</field>
 	<title>
 		<band height="136" splitType="Stretch">
 			<image>
 				<reportElement x="0" y="0" width="180" height="132" uuid="7836ad5d-91c8-428c-87ca-a1a8b2b8b137"/>
-				<imageExpression><![CDATA["C:\\Users\\Nsovo\\Documents\\Nsovo Baloyi\\School Work\\2016\\COS 301\\Mini Project\\Phase 3\\alpha_reporting\\src\\main\\java\\com\\codinginfinity\\research\\report\\defaultImpl\\logo.jpg"]]></imageExpression>
+				<imageExpression><![CDATA["src/main/java/com/codinginfinity/research/report/defaultImpl/logo.jpg"]]></imageExpression>
 			</image>
 			<staticText>
 				<reportElement style="Title" x="270" y="0" width="380" height="62" uuid="a080d2ca-6207-4d8e-87c9-d3b61fb495a9"/>
@@ -32,62 +34,82 @@
 				<textElement>
 					<font fontName="Times New Roman"/>
 				</textElement>
-				<text><![CDATA[Report SubTitle]]></text>
+				<text><![CDATA[Publications in Progress]]></text>
 			</staticText>
-			<staticText>
+			<textField>
 				<reportElement x="250" y="90" width="383" height="42" uuid="835b3545-d85c-44c2-abf6-160b7e7a589e"/>
 				<textElement textAlignment="Right">
-					<font size="10"/>
+					<font size="10.5"/>
 				</textElement>
-				<text><![CDATA[$P{DETAILS}]]></text>
-			</staticText>
+			<textFieldExpression><![CDATA["This report shows the progress of all " +$P{REPORT_OWNER}+" publications that are of "+$P{REPORT_TYPE}]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<columnHeader>
-		<band height="23" splitType="Stretch">
+		<band height="30" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<staticText>
-				<reportElement mode="Opaque" x="0" y="3" width="800" height="15" backcolor="#70A9A9" uuid="c867259e-d59b-4210-986b-396ea65bcd02"/>
+				<reportElement mode="Opaque" x="0" y="2" width="800" height="28" backcolor="#70A9A9" uuid="c867259e-d59b-4210-986b-396ea65bcd02">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
 				<box>
 					<bottomPen lineWidth="1.0" lineColor="#CCCCCC"/>
 				</box>
 				<text><![CDATA[ ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="520" y="4" width="121" height="15" uuid="d6d908fd-32e7-4f34-b254-358951b47051"/>
+				<reportElement x="550" y="4" width="250" height="25" uuid="d6d908fd-32e7-4f34-b254-358951b47051">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font isBold="true"/>
+					<font size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Progress]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="3" width="136" height="15" uuid="d6420636-98ee-4110-b27b-d58168f6de51"/>
+				<reportElement x="0" y="3" width="550" height="25" uuid="d6420636-98ee-4110-b27b-d58168f6de51"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+					<rightPen lineWidth="2.0"/>
+				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font isBold="true"/>
+					<font size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Title]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="16" splitType="Stretch">
+		<band height="25" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<staticText>
-				<reportElement mode="Opaque" x="0" y="0" width="800" height="14" backcolor="#E5ECF9" uuid="cd383e1a-2bf5-43c8-9551-f5b8fb2f1d91"/>
+				<reportElement mode="Opaque" x="0" y="0" width="800" height="24" backcolor="#E5ECF9" uuid="cd383e1a-2bf5-43c8-9551-f5b8fb2f1d91"/>
 				<box>
 					<bottomPen lineWidth="0.25" lineColor="#CCCCCC"/>
 				</box>
 				<text><![CDATA[ ]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="520" y="0" width="121" height="15" uuid="277c21a7-c26b-431b-817f-e26fca87719f"/>
+				<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="550" height="24" uuid="277c21a7-c26b-431b-817f-e26fca87719f"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+					<topPen lineWidth="0.0" lineStyle="Solid"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid"/>
+					<rightPen lineWidth="2.0"/>
+				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="9"/>
+					<font size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{progress}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{TITLE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="0" width="136" height="15" uuid="f447e442-f071-4037-b0ee-58d0c663ae6c"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{title}]]></textFieldExpression>
+				<reportElement x="550" y="0" width="250" height="24" uuid="f447e442-f071-4037-b0ee-58d0c663ae6c">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PROGRESS}+"%"]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
@@ -114,7 +136,7 @@
 					<textElement verticalAlignment="Middle">
 						<font size="10" isBold="false"/>
 					</textElement>
-					<textFieldExpression><![CDATA["Report generated on" + new java.util.Date()]]></textFieldExpression>
+					<textFieldExpression><![CDATA["Report generated on " + new java.util.Date()]]></textFieldExpression>
 				</textField>
 			</frame>
 		</band>

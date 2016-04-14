@@ -10,6 +10,11 @@
 */
 
 package com.codinginfinity.research.report;
+
+import com.codinginfinity.research.report.defaultImpl.GetAccreditationUnitReportRequest;
+import com.codinginfinity.research.report.defaultImpl.GetProgressReportRequest;
+import com.codinginfinity.research.report.defaultImpl.GetAccreditationUnitReportResponse;
+import com.codinginfinity.research.report.defaultImpl.GetProgressReportResponse;
 public interface Reporting {
     
     /**
