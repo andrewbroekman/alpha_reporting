@@ -22,30 +22,45 @@ class ReportingTestConfiguration {
     String dateEInput = "2017-01-01";
     Date dS = new Date();
     Date dE = new Date();
-
+    /**
+     * Creates a mock object of LifeCycleState and returns it, also sets the lifeCycleState and misc
+     * @return 
+     */
     @Bean
     public LifeCycleState state(){
         return new LifeCycleState("InProgress", "59");
     }
-
+    /**
+     * Creates a mock object for Period, sets its parameters and returns the object
+     * @return 
+     */
     @Bean
     public Period period(){
         return new Period(dS, dE);
 
     }
-
+    /**
+     * Creates a mock object for ReqEntity group, sets its parameters and returns the object
+     * @return 
+     */
     @Bean 
     public ReqEntity groupEntity(){
         return new ReqEntity("GROUP", "Test Research Group 1");
     
     }
-       
+    /**
+     * Creates a mock object for ReqEntity person, sets its parameters and returns the object
+     * @return 
+     */   
     @Bean 
     public ReqEntity personEntity(){
         return new ReqEntity("PERSON", "Paul");
     
     }
-    
+    /**
+     * Creates a mock object for PublicationType, sets its parameters and returns the object
+     * @return 
+     */
    @Bean
     public PublicationType PubType(){
         return new PublicationType("Journal", 1.0);
