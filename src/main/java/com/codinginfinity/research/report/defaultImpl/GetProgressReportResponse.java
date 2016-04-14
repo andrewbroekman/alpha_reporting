@@ -38,7 +38,8 @@ public class GetProgressReportResponse implements Response
     }
     
     /**
-     * 
+     * This function builds table for an SVG file for the progress report response,
+     * this function is for testing purposes
      * @return 
      */
     public boolean getSVG(){
@@ -67,7 +68,8 @@ public class GetProgressReportResponse implements Response
     }
     
     /**
-     * 
+     * Function to build table for pdf version of the progress report response
+     * this function is for testing purposes
      * @return 
      */
     public boolean getPDF(){
@@ -85,7 +87,8 @@ public class GetProgressReportResponse implements Response
     }
     
     /**
-     * 
+     * Function to build table for XML file for progress report response
+     * returns an XML version of the string which can translated to any report response  
      * @return 
      */
     public String getXML(){
@@ -101,7 +104,8 @@ public class GetProgressReportResponse implements Response
     }
     
     /**
-     * 
+     * Function to build table for HTML file for progress report response
+     * this function is for testing purposes
      * @return 
      */
     public boolean getHTML(){
