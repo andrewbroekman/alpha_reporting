@@ -9,10 +9,6 @@
 */
 
 package com.codinginfinity.research.report.defaultImpl;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-
 import com.codinginfinity.research.report.Response;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporterParameter;
@@ -21,13 +17,13 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.export.JRGraphics2DExporter;
 import net.sf.jasperreports.engine.export.JRGraphics2DExporterParameter;
 import org.apache.batik.dom.GenericDOMImplementation;
-import org.apache.batik.svggen.DefaultExtensionHandler;
-import org.apache.batik.svggen.DefaultImageHandler;
-import org.apache.batik.svggen.ExtensionHandler;
-import org.apache.batik.svggen.ImageHandler;
-import org.apache.batik.svggen.SVGGraphics2D;
+import org.apache.batik.svggen.*;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class GetProgressReportResponse implements Response
 {
@@ -61,7 +57,7 @@ public class GetProgressReportResponse implements Response
                exporter.setParameter(JRExporterParameter.PAGE_INDEX, 0);
                exporter.exportReport();
 
-                grx.stream(new FileWriter(new File("reporting.svg")), true);
+                grx.stream(new FileWriter(new File("ProgressReport.svg")), true);
         }
         catch(JRException | IOException e){
             System.out.println( e);
@@ -77,7 +73,7 @@ public class GetProgressReportResponse implements Response
     public boolean getPDF(){
         try{ 
             
-            JasperExportManager.exportReportToPdfFile(print, "reporting.pdf");
+            JasperExportManager.exportReportToPdfFile(print, "ProgressReport.pdf");
            
         }
         catch( JRException e){
@@ -92,16 +88,16 @@ public class GetProgressReportResponse implements Response
      * 
      * @return 
      */
-    public boolean getXML(){
+    public String getXML(){
+        String result="";
         try{ 
-            JasperExportManager.exportReportToXmlFile(print, "reporting.xml", true);
+            result=JasperExportManager.exportReportToXml(print);
             
         }
         catch( JRException e){
             System.err.println( "JRException " + e);
-            return false;
         }
-        return true;               
+        return result;
     }
     
     /**
@@ -110,7 +106,7 @@ public class GetProgressReportResponse implements Response
      */
     public boolean getHTML(){
         try{ 
-            JasperExportManager.exportReportToHtmlFile(print, "reporting.html");
+            JasperExportManager.exportReportToHtmlFile(print, "ProgressReport.html");
             
         }
         catch( JRException e){
