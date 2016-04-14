@@ -14,8 +14,8 @@
         <class>com.codinginfinity.research.publication.LifeCycleState</class>
 
         <properties>
-            <property name="openjpa.ConnectionURL" value="jdbc:h2:~/jpa"/>
-            <!--<property name="openjpa.ConnectionURL" value="jdbc:h2:mem:jpa;DB_CLOSE_DELAY=-1"/>-->
+            <!--<property name="openjpa.ConnectionURL" value="jdbc:h2:~/jpa"/>-->
+            <property name="openjpa.ConnectionURL" value="jdbc:h2:mem:ReportingTestBD;DB_CLOSE_DELAY=-1"/>
             <property name="openjpa.ConnectionDriverName" value="org.h2.Driver"/>
             <property name="openjpa.ConnectionUserName" value="sa"/>
             <property name="openjpa.ConnectionPassword" value=""/>
