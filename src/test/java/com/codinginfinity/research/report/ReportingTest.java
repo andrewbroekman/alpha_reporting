@@ -10,39 +10,62 @@
 */
 package com.codinginfinity.research.report;
 
-import com.codinginfinity.research.report.defaultImpl.GetAccreditationUnitReportRequest;
-import com.codinginfinity.research.report.defaultImpl.GetAccreditationUnitReportResponse;
-import com.codinginfinity.research.report.defaultImpl.GetProgressReportRequest;
-import com.codinginfinity.research.report.defaultImpl.GetProgressReportResponse;
-import com.codinginfinity.research.report.defaultImpl.ReportingImpl;
-import javax.inject.Inject;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import javax.persistence.*;
-import java.text.*;
-import java.util.Date;
 import com.codinginfinity.research.people.Person;
 import com.codinginfinity.research.people.ReqEntity;
 import com.codinginfinity.research.people.ResearchGroup;
 import com.codinginfinity.research.publication.LifeCycleState;
 import com.codinginfinity.research.publication.Publication;
 import com.codinginfinity.research.publication.PublicationType;
+import com.codinginfinity.research.report.defaultImpl.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {ReportingTestConfiguration.class})
 public class ReportingTest {
-    
+
+    /**
+     *
+     * @throws Exception
+     */
+    @Test(expected = InvalidRequestException.class)
+    public void accreditationUnitReportTest1() throws Exception{
+
+        Report.getAccreditationUnitReport(new GetAccreditationUnitReportRequest());
+    }
+
+    /**
+     *
+     * @throws Exception
+     */
+    @Test
+    public void accreditationUnitReportTest2() throws Exception{
+
+        for (GetAccreditationUnitReportRequest test : accReportTestData){
+            AccUnitReporRes = Report.getAccreditationUnitReport(test);
+            assertTrue("SVG was printed",AccUnitReporRes.getSVG());
+            assertTrue("PDF was printed",AccUnitReporRes.getPDF());
+            assertTrue("HTML was printed", AccUnitReporRes.getHTML());
+        }
+    }
+
     /**
      * 
      * @throws Exception 
@@ -68,6 +91,13 @@ public class ReportingTest {
         }
                
     }
+
+    @Inject
+    private com.codinginfinity.research.report.defaultImpl.LifeCycleState state;
+
+    @Inject
+    private Period period;
+
     @Inject
     private ReqEntity groupEntity;
     
@@ -104,9 +134,18 @@ public class ReportingTest {
         progReportTestData.add(new GetProgressReportRequest(PubType));        
         progReportTestData.add(new GetProgressReportRequest(groupEntity, PubType));
         progReportTestData.add(new GetProgressReportRequest(personEntity, PubType));
-        
-        
-        
+
+        accReportTestData.add(new GetAccreditationUnitReportRequest(groupEntity, null, null, null));
+        accReportTestData.add(new GetAccreditationUnitReportRequest(personEntity, null, null, null));
+        accReportTestData.add(new GetAccreditationUnitReportRequest(null, state, null, null));
+        accReportTestData.add(new GetAccreditationUnitReportRequest(groupEntity, state, null, null));
+        accReportTestData.add(new GetAccreditationUnitReportRequest(groupEntity, state, PubType, null));
+        accReportTestData.add(new GetAccreditationUnitReportRequest(groupEntity, state, null, period));
+        accReportTestData.add(new GetAccreditationUnitReportRequest(null, null, PubType, null));
+        accReportTestData.add(new GetAccreditationUnitReportRequest(null, null, null, period));
+        accReportTestData.add(new GetAccreditationUnitReportRequest(groupEntity, state, PubType, period));
+        accReportTestData.add(new GetAccreditationUnitReportRequest(personEntity, state, PubType, period));
+
         emfactory = Persistence.createEntityManagerFactory("ReportingTestUnit");
         entitymanager = emfactory.createEntityManager();
         Report = new ReportingImpl(emfactory, entitymanager);

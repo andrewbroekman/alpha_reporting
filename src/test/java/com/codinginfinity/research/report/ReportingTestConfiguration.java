@@ -1,12 +1,14 @@
 package com.codinginfinity.research.report;
 
-import com.codinginfinity.research.report.defaultImpl.PublicationType;
 import com.codinginfinity.research.people.ReqEntity;
-import com.codinginfinity.research.report.defaultImpl.ReportingImpl;
-import com.codinginfinity.research.report.defaultImpl.GetProgressReportRequest;
-import com.codinginfinity.research.report.defaultImpl.GetAccreditationUnitReportRequest;
+import com.codinginfinity.research.report.defaultImpl.LifeCycleState;
+import com.codinginfinity.research.report.defaultImpl.Period;
+import com.codinginfinity.research.report.defaultImpl.PublicationType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  *
@@ -14,6 +16,24 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 class ReportingTestConfiguration {
+
+    SimpleDateFormat tmp = new SimpleDateFormat("yyyy-MM-dd");
+    String dateSInput = "2015-01-01";
+    String dateEInput = "2017-01-01";
+    Date dS = new Date();
+    Date dE = new Date();
+
+    @Bean
+    public LifeCycleState state(){
+        return new LifeCycleState("InProgress", "59");
+    }
+
+    @Bean
+    public Period period(){
+        return new Period(dS, dE);
+
+    }
+
     @Bean 
     public ReqEntity groupEntity(){
         return new ReqEntity("GROUP", "Test Research Group 1");
