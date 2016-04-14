@@ -42,7 +42,12 @@ public class ReportingImpl implements Reporting{
         this.emfactory = emfactory;
         this.entitymanager = entitymanager;
     }
-    
+    /**
+     * Implementation of the  GetAccreditationUnit service contract
+     * @param request
+     * @return
+     * @throws InvalidRequestException 
+     */
     @Override
     public GetAccreditationUnitReportResponse getAccreditationUnitReport(GetAccreditationUnitReportRequest request) throws InvalidRequestException
     {
@@ -63,7 +68,11 @@ public class ReportingImpl implements Reporting{
         }
        
     }
-
+    /**
+     * Builds the Get Accreditation Unit response object for the service contract
+     * @param q
+     * @return 
+     */
     private GetAccreditationUnitReportResponse buildAccreditationReport(Query q){
         try
         {
@@ -335,7 +344,12 @@ public class ReportingImpl implements Reporting{
     
     //==================================================================================================================
     //==================================================================================================================
-
+    /**
+     * Implementation of the GetProgressReportResponse for the service contract
+     * @param request
+     * @return
+     * @throws InvalidRequestException 
+     */
     @Override
     public GetProgressReportResponse getProgressReport(GetProgressReportRequest request) throws InvalidRequestException {
         if(request == null){
@@ -352,7 +366,11 @@ public class ReportingImpl implements Reporting{
         }
         
     }
-       
+    /**
+     * Builds queries to obtain data from the the database to build the GetProgressReportResponse
+     * @param request
+     * @return 
+     */   
     private Query generateProgressReportQuery( GetProgressReportRequest request ){
         ReqEntity entity = request.getEntity();
         com.codinginfinity.research.report.defaultImpl.PublicationType pubtype = request.getPublicationType();
@@ -408,7 +426,11 @@ public class ReportingImpl implements Reporting{
         }  
         
     }
-    
+    /**
+     * Builds the GetProgressReportResponse for the service contract 
+     * @param q
+     * @return 
+     */
     private GetProgressReportResponse buildProgressReport(Query q){
         try
         {
