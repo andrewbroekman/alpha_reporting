@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version last-->
+<!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
+<!-- 2016-04-14T13:15:21 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="jasper_report_template" pageWidth="842" pageHeight="595" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="3e20851d-b280-46ba-aa05-79a95e38c937">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<style name="Title" fontName="Times New Roman" fontSize="50" isBold="true"/>
@@ -8,20 +9,26 @@
 	<parameter name="REPORT_OWNER" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
-	<parameter name="REPORT_TYPE" class="java.lang.String">
+	<parameter name="REPORT_TYPE1" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
-	<field name="PROGRESS" class="java.lang.String">
-		<fieldDescription><![CDATA[PROGRESS]]></fieldDescription>
+	<field name="REPORT_TITLE" class="java.lang.String">
+		<fieldDescription><![CDATA[REPORT_TITLE]]></fieldDescription>
 	</field>
-	<field name="TITLE" class="java.lang.String">
-		<fieldDescription><![CDATA[TITLE]]></fieldDescription>
+	<field name="STATE" class="java.lang.String">
+		<fieldDescription><![CDATA[STATE]]></fieldDescription>
+	</field>
+	<field name="REPORT_TYPE" class="java.lang.String">
+		<fieldDescription><![CDATA[REPORT_TYPE]]></fieldDescription>
+	</field>
+	<field name="ACCUNITS" class="java.lang.Double">
+		<fieldDescription><![CDATA[ACCUNITS]]></fieldDescription>
 	</field>
 	<title>
 		<band height="136" splitType="Stretch">
 			<image>
 				<reportElement x="0" y="0" width="180" height="132" uuid="7836ad5d-91c8-428c-87ca-a1a8b2b8b137"/>
-				<imageExpression><![CDATA["./logo.jpg"]]></imageExpression>
+				<imageExpression><![CDATA["src/main/java/com/codinginfinity/research/report/defaultImpl/logo.jpg"]]></imageExpression>
 			</image>
 			<staticText>
 				<reportElement style="Title" x="170" y="0" width="580" height="62" uuid="a080d2ca-6207-4d8e-87c9-d3b61fb495a9"/>
@@ -40,7 +47,7 @@
 				<textElement textAlignment="Right">
 					<font size="10"/>
 				</textElement>
-				<text><![CDATA[This report shows the progress of all $P{REPORT_OWNER} publications that are of $P{REPORT_TYPE}.]]></text>
+				<text><![CDATA[This report shows the progress of all $P{REPORT_OWNER} publications that are of $P{REPORT_TYPE1}.]]></text>
 			</staticText>
 		</band>
 	</title>
@@ -119,7 +126,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{TITLE}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{REPORT_TITLE}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="200" y="0" width="170" height="24" uuid="f447e442-f071-4037-b0ee-58d0c663ae6c">
@@ -128,7 +135,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{UNITS}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{ACCUNITS}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="370" y="2" width="240" height="24" uuid="a02b6788-c74e-43aa-951d-5ba31a1b0b40">
@@ -137,7 +144,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{TYPE}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{REPORT_TYPE}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="610" y="2" width="190" height="24" uuid="26327ef9-8396-4f9e-bb36-aa347c277883">
