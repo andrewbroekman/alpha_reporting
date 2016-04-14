@@ -26,8 +26,8 @@ import java.util.Map;
 import com.codinginfinity.research.people.ReqEntity;
 import com.codinginfinity.research.publication.Publication;
 //import com.codinginfinity.research.publication.PublicationType;
-import com.codinginfinity.research.publication.LifeCycleState;
-import com.codinginfinity.research.publication.Period;
+//import com.codinginfinity.research.publication.LifeCycleState;
+//import com.codinginfinity.research.publication.Period;
 import java.util.List;
 import javax.inject.Inject;
 
@@ -46,7 +46,14 @@ public class ReportingImpl implements Reporting{
     @Override
     public GetAccreditationUnitReportResponse getAccreditationUnitReport(GetAccreditationUnitReportRequest request) throws InvalidRequestException
     {
-        if(request != null)
+        if(request == null){
+            throw new InvalidRequestException();
+        }
+        else if(request.getEntity() == null && request.getPublicationType()==null && request.getPeriod() == null && request.getLifeCycleState() == null)
+        {
+            throw new InvalidRequestException();
+        }
+        else
         {
             Query query = generateAccreditationQuery(request);
             
@@ -54,17 +61,14 @@ public class ReportingImpl implements Reporting{
 
 
         }
-        else
-        {
-            throw new InvalidRequestException();
-        }
+       
     }
 
     private GetAccreditationUnitReportResponse buildAccreditationReport(Query q){
         try
         {
             JasperPrint jasperPrint;
-            InputStream input = new FileInputStream(new File("./AccreditationUnitReport.jrxml"));
+            InputStream input = new FileInputStream(new File("src/main/java/com/codinginfinity/research/report/defaultImpl/AccreditationUnitReportTemplate.jrxml"));
             JasperDesign design = JRXmlLoader.load(input);
             JasperReport report = JasperCompileManager.compileReport(design);
             Map parameters = new HashMap();
@@ -72,9 +76,10 @@ public class ReportingImpl implements Reporting{
             parameters.put("DETAILS", "Progress report from DATE to DATE");
 
             GetAccreditationUnitReportResponse response;
-            ArrayList<Publication> list = (ArrayList<Publication>) q.getResultList();
-
-            JRBeanCollectionDataSource ColDataSource = new JRBeanCollectionDataSource(list);
+           List<Object[]> list = (List<Object[]>) q.getResultList();
+            
+            String[] a = {"ACCUNITS", "REPORT_TITLE", "REPORT_TYPE", "STATE"};
+            JRDataSource ColDataSource  = new ListOfArrayDataSource(list, a);
             jasperPrint = JasperFillManager.fillReport(report, parameters, ColDataSource);
 
             response = new GetAccreditationUnitReportResponse(jasperPrint);
@@ -82,6 +87,7 @@ public class ReportingImpl implements Reporting{
         }
         catch(FileNotFoundException | JRException e)
         {
+            System.out.println(e + "   111111111111111111");
             return null;
         }
     }
@@ -94,133 +100,164 @@ public class ReportingImpl implements Reporting{
     Query generateAccreditationQuery(GetAccreditationUnitReportRequest request) throws InvalidRequestException{
         ReqEntity entity = request.getEntity();
         LifeCycleState state = request.getLifeCycleState();
-
-        com.codinginfinity.research.publication.PublicationType type = null; //request.getPublicationType();
+        com.codinginfinity.research.report.defaultImpl.PublicationType type = request.getPublicationType();
         Period period = request.getPeriod();
-        Query query = null;
-
-        if(entity != null)
-        {
-           if(state == null && type == null && period == null)
+        
+       if(state == null && type == null && period == null && entity != null)
+       {
+           if("person".equalsIgnoreCase(entity.getType()))
            {
-               if("person".equalsIgnoreCase(entity.getType()))
-               {
-                   query = entitymanager.createQuery( "SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
-                           " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
-                           "FROM  Publication b INNER JOIN b.authors p WHERE p.firstNames = :entity").setParameter("entity",entity.getName());
-               }
-               else
-               {
-                   query= entitymanager.createQuery("SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
-                           " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
+               System.out.println("HERE Person " + entity.getName());
+               return entitymanager.createQuery( "SELECT b.publicationType.accreditationPoints ACCUNITS, b.title AS REPORT_TITLE, " +
+                          " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
+                           "FROM  Publication b INNER JOIN b.authors p WHERE p.firstNames = :entity").setParameter("entity","Sally");
+            }
+            else
+            {
+                System.out.println("HERE Group " + entity.getName());
+                return entitymanager.createQuery("SELECT b.publicationType.accreditationPoints UNITS, b.title REPORT_TITLE, " +
+                           "b.publicationType.name REPORT_TYPE, b.lifeCycleState.lifeCycleState STATE " +
                            "FROM  Publication b INNER JOIN b.group g WHERE g.name = :entity").setParameter("entity",entity.getName());
-               }
-           }
-            else if(state != null && type == null && period == null)
-           {
-               if("person".equalsIgnoreCase(entity.getType()))
-               {
-                   query= entitymanager.createQuery( "SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
+            }
+       }
+       else if(entity == null && type == null && period ==null && state != null)
+       {
+           return entitymanager.createQuery("SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
+                        " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
+                        "FROM  Publication b WHERE b.lifeCycleState.lifeCycleState = :state").setParameter("state", state.getLifeCycleState());
+           
+       }
+       else if(entity == null && state == null && period ==null && type != null){
+           
+           System.out.println("HERE 17");
+                return entitymanager.createQuery("SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
+                        " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
+                        "FROM  Publication b WHERE b.publicationType.name = :type").setParameter("type", type.getName());
+           
+       }
+       else if(entity == null && state == null && type ==null && period != null){
+           
+           
+           System.out.println("HERE 18");
+                return entitymanager.createQuery("SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
+                        " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
+                        "FROM  Publication b WHERE b.envisagedPublicationDate BETWEEN :start" +
+                        " AND :end").setParameter("start",period.getStartDate()).setParameter("end", period.getEndDate());
+           
+       }
+       else if(entity != null && state != null && type == null && period == null){
+            if("person".equalsIgnoreCase(entity.getType()))
+            {
+                System.out.println("HERE 3");
+                return entitymanager.createQuery( "SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
                            " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
                            "FROM  Publication b INNER JOIN b.authors p WHERE p.firstNames = :entity " +
                            "AND b.lifeCycleState.lifeCycleState = :state ").setParameter("entity",entity.getName()).setParameter("state", state.getLifeCycleState());
-               }
-               else
-               {
-                   query= entitymanager.createQuery("SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
+            }
+            else
+            {
+                System.out.println("HERE 4");
+                return entitymanager.createQuery("SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
                            " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
                            "FROM  Publication b INNER JOIN b.group g WHERE g.name = :entity " +
                            "AND b.lifeCycleState.lifeCycleState = :state").setParameter("entity",entity.getName()).setParameter("state", state.getLifeCycleState());
 
-               }
-
-           }
-            else if(state == null && type != null && period == null)
-           {
-               if("person".equalsIgnoreCase(entity.getType()))
-               {
-                   query= entitymanager.createQuery("SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
+            }
+       }
+       
+       
+       else if(entity != null && state == null && type != null && period == null){
+            if("person".equalsIgnoreCase(entity.getType()))
+            {
+                System.out.println("HERE 3");
+                return entitymanager.createQuery( "SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
                            " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
                            "FROM  Publication b INNER JOIN b.authors p WHERE p.firstNames = :entity " +
                            "AND b.publicationType.name = :type").setParameter("entity",entity.getName()).setParameter("type", type.getName());
-               }
-               else
-               {
-                   query= entitymanager.createQuery("SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
+            }
+            else
+            {
+                System.out.println("HERE 4");
+                return entitymanager.createQuery("SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
                            " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
                            "FROM  Publication b INNER JOIN b.group g WHERE g.name = :entity " +
-                           "AND b.publicationType.name = :type").setParameter("entity",entity.getName()).setParameter("type", type.getName());
-               }
-           }
+                           "AND b.lifeCycleState.lifeCycleState = :state").setParameter("entity",entity.getName()).setParameter("state", state.getLifeCycleState());
 
-           else if(state == null && type == null && period != null)
-           {
-               if("person".equalsIgnoreCase(entity.getType()))
+            }
+       }
+       
+       
+       
+       else if(entity != null && state == null && type == null && period != null){
+           if("person".equalsIgnoreCase(entity.getType()))
                {
-                   query= entitymanager.createQuery("SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
+                   System.out.println("HERE 7");
+                   return entitymanager.createQuery("SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
                            " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
-                           "FROM  Publication b INNER JOIN b.group g WHERE g.name = :entity " +
+                           "FROM  Publication b INNER JOIN b.authors p WHERE p.firstNames = :entity " +
                            "AND b.envisagedPublicationDate BETWEEN :start" +
                            " AND :end").setParameter("entity",entity.getName()).setParameter("start",period.getStartDate()).setParameter("end", period.getEndDate());
                }
                else
                {
-                   query= entitymanager.createQuery( "SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
+                   System.out.println("HERE 8");
+                   return entitymanager.createQuery( "SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
                             " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
                             "FROM  Publication b INNER JOIN b.group g WHERE g.name = :entity " +
                            "AND b.envisagedPublicationDate BETWEEN :start" +
                            " AND :end").setParameter("entity",entity.getName()).setParameter("start",period.getStartDate()).setParameter("end", period.getEndDate());
                }
-           }
-
-           else if(state != null && type != null && period == null)
-           {
-               if("person".equalsIgnoreCase(entity.getType()))
+       }
+       else if(entity == null && state == null && type != null && period != null){
+           
+           System.out.println("HERE 21");
+                return entitymanager.createQuery( "SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
+                        " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
+                        "FROM  Publication b WHERE b.publicationType.name = :type " +
+                        "AND b.envisagedPublicationDate BETWEEN :start" +
+                        " AND :end").setParameter("start",period.getStartDate()).setParameter("end",period.getEndDate()).setParameter("type",type.getName());
+       }
+       else if(entity == null && state != null && type != null && period == null){
+           System.out.println("HERE 19");
+                return entitymanager.createQuery( "SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
+                        " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
+                        "FROM  Publication b WHERE b.publicationType.name = :type " +
+                        "AND b.lifeCycleState.lifeCycleState = :state ").setParameter("state", state.getLifeCycleState()).setParameter("type", type.getName());
+       } else if(entity == null && state != null && type == null && period != null)
+            {
+                System.out.println("HERE 20");
+                return entitymanager.createQuery("SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
+                        " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
+                        "FROM  Publication b WHERE b.lifeCycleState.lifeCycleState = :state " +
+                        "AND b.envisagedPublicationDate BETWEEN :start" +
+                        " AND :end").setParameter("state", state.getLifeCycleState()).setParameter("start",period.getStartDate()).setParameter("end", period.getEndDate());
+            }      
+       else if(entity != null && state != null && type != null && period == null){
+           if("person".equalsIgnoreCase(entity.getType()))
                {
-                   query= entitymanager.createQuery( "SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
-                           " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
+                   System.out.println("HERE 9");
+                   return entitymanager.createQuery( "SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
+                           "b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
                            "FROM  Publication b INNER JOIN b.authors p WHERE p.firstNames = :entity " +
-                           "AND b.publicationType.name = :type" +
+                           "AND b.publicationType.name = :type " +
                            "AND b.lifeCycleState.lifeCycleState = :state").setParameter("entity",entity.getName()).setParameter("state", state.getLifeCycleState()).setParameter("type", type.getName());
                }
                else
                {
-                   query= entitymanager.createQuery( "SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
+                   System.out.println("HERE 10");
+                   return entitymanager.createQuery( "SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
                            " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
                            "FROM  Publication b INNER JOIN b.group g WHERE g.name = :entity " +
                            "AND b.publicationType.name = :type " +
                            "AND b.lifeCycleState.lifeCycleState = :state").setParameter("entity",entity.getName()).setParameter("state", state.getLifeCycleState()).setParameter("type", type.getName());
 
                }
-           }
-
-           else if(state != null && type == null && period != null)
-           {
-               if("person".equalsIgnoreCase(entity.getType()))
+       }       
+       else if(entity != null && state == null && type != null && period != null){
+           if("person".equalsIgnoreCase(entity.getType()))
                {
-                   query = entitymanager.createQuery( "SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
-                           " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
-                           "FROM  Publication b INNER JOIN b.authors p WHERE p.firstNames = :entity " +
-                           "AND b.lifeCycleState.lifeCycleState = :state " +
-                           "AND b.envisagedPublicationDate BETWEEN :start" +
-                           " AND :end").setParameter("entity",entity.getName()).setParameter("state", state.getLifeCycleState()).setParameter("start",period.getStartDate()).setParameter("end", period.getEndDate());
-               }
-               else
-               {
-                   query = entitymanager.createQuery("SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
-                           " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
-                           "FROM  Publication b INNER JOIN b.group g WHERE g.name = :entity " +
-                           "AND b.lifeCycleState.lifeCycleState = :state " +
-                           "AND b.envisagedPublicationDate BETWEEN :start" +
-                           " AND :end").setParameter("entity",entity.getName()).setParameter("state", state.getLifeCycleState()).setParameter("start",period.getStartDate()).setParameter("end", period.getEndDate());
-               }
-           }
-
-           else if(state == null && type != null && period != null)
-           {
-               if("person".equalsIgnoreCase(entity.getType()))
-               {
-                   query = entitymanager.createQuery("SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
+                   System.out.println("HERE 13");
+                   return entitymanager.createQuery("SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
                            " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
                            "FROM  Publication b INNER JOIN b.authors p WHERE p.firstNames = :entity " +
                            "AND b.publicationType.name = :type " +
@@ -229,20 +266,51 @@ public class ReportingImpl implements Reporting{
                }
                else
                {
-                   query = entitymanager.createQuery("SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
+                   System.out.println("HERE 14");
+                   return entitymanager.createQuery("SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
                            " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
                            "FROM  Publication b INNER JOIN b.group g WHERE g.name = :entity " +
                            "AND b.publicationType.name = :type " +
                            "AND b.envisagedPublicationDate BETWEEN :start " +
                            " AND :end").setParameter("entity",entity.getName()).setParameter("type", type.getName()).setParameter("start",period.getStartDate()).setParameter("end", period.getEndDate());
                }
-           }
-           //nothing is null
-            else
+       
+       }else if(entity != null && state != null && type == null && period != null){
+           if("person".equalsIgnoreCase(entity.getType()))
+               {
+                   System.out.println("HERE 11");
+                   return entitymanager.createQuery( "SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
+                           " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
+                           "FROM  Publication b INNER JOIN b.authors p WHERE p.firstNames = :entity " +
+                           "AND b.lifeCycleState.lifeCycleState = :state " +
+                           "AND b.envisagedPublicationDate BETWEEN :start" +
+                           " AND :end").setParameter("entity",entity.getName()).setParameter("state", state.getLifeCycleState()).setParameter("start",period.getStartDate()).setParameter("end", period.getEndDate());
+               }
+               else
+               {
+                   System.out.println("HERE 12");
+                   return entitymanager.createQuery("SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
+                           " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
+                           "FROM  Publication b INNER JOIN b.group g WHERE g.name = :entity " +
+                           "AND b.lifeCycleState.lifeCycleState = :state " +
+                           "AND b.envisagedPublicationDate BETWEEN :start" +
+                           " AND :end").setParameter("entity",entity.getName()).setParameter("state", state.getLifeCycleState()).setParameter("start",period.getStartDate()).setParameter("end", period.getEndDate());
+               }
+       }else if(entity == null && state != null && type != null && period != null){
+           return entitymanager.createQuery( "SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
+                           " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
+                           "FROM  Publication b WHERE " +
+                           "b.publicationType.name = :type " +
+                           "AND b.lifeCycleState.lifeCycleState = :state " +
+                           "AND b.envisagedPublicationDate BETWEEN :start" +
+                           " AND :end").setParameter("state", state.getLifeCycleState()).setParameter("type", type.getName()).setParameter("start",period.getStartDate()).setParameter("end", period.getEndDate());
+       }       
+       else
            {
                if("person".equalsIgnoreCase(entity.getType()))
                {
-                   query =entitymanager.createQuery( "SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
+                   System.out.println("HERE 14");
+                   return entitymanager.createQuery( "SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
                            " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
                            "FROM  Publication b INNER JOIN b.authors p WHERE p.firstNames = :entity " +
                            "AND b.publicationType.name = :type " +
@@ -252,7 +320,8 @@ public class ReportingImpl implements Reporting{
                }
                else
                {
-                   query = entitymanager.createQuery("SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
+                   System.out.println("HERE 15");
+                   return entitymanager.createQuery("SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
                            " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
                            "FROM  Publication b INNER JOIN b.group g WHERE g.name = :entity " +
                            "AND b.publicationType.name = :type " +
@@ -260,77 +329,7 @@ public class ReportingImpl implements Reporting{
                            "AND b.envisagedPublicationDate BETWEEN :start" +
                            " AND :end").setParameter("entity",entity.getName()).setParameter("state", state.getLifeCycleState()).setParameter("type", type.getName()).setParameter("start",period.getStartDate()).setParameter("end", period.getEndDate());
                }
-           }
-        }
-        //entity is null
-        else
-        {
-            if(state != null && type == null && period == null)
-            {
-                query =  entitymanager.createQuery("SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
-                        " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
-                        "FROM  Publication b WHERE b.lifeCycleState.lifeCycleState = :state").setParameter("state", state.getLifeCycleState());
-            }
-            else if(state == null && type != null && period == null)
-            {
-                query = entitymanager.createQuery("SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
-                        " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
-                        "FROM  Publication b WHERE b.publicationType.name = :type").setParameter("type", type.getName());
-            }
-
-            else if(state == null && type == null && period != null)
-            {
-                query = entitymanager.createQuery("SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
-                        " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
-                        "FROM  Publication b WHERE b.envisagedPublicationDate BETWEEN :start" +
-                        " AND :end").setParameter("start",period.getStartDate()).setParameter("end", period.getEndDate());
-            }
-
-            else if(state != null && type != null && period == null)
-            {
-                query= entitymanager.createQuery( "SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
-                        " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
-                        "FROM  Publication b WHERE b.publicationType.name = :type " +
-                        "AND b.lifeCycleState.lifeCycleState = :state ").setParameter("state", state.getLifeCycleState()).setParameter("type", type.getName());
-            }
-
-            else if(state != null && type == null && period != null)
-            {
-                query= entitymanager.createQuery("SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
-                        " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
-                        "FROM  Publication b WHERE b.lifeCycleState.lifeCycleState = :state " +
-                        "AND b.envisagedPublicationDate BETWEEN :start" +
-                        " AND :end").setParameter("state", state.getLifeCycleState()).setParameter("start",period.getStartDate()).setParameter("end", period.getEndDate());
-            }
-
-
-            else if(state == null && type != null && period != null)
-            {
-                query= entitymanager.createQuery( "SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
-                        " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
-                        "FROM  Publication b WHERE b.publicationType.name = :type " +
-                        "AND b.envisagedPublicationDate BETWEEN :start" +
-                        " AND :end").setParameter("start",period.getStartDate()).setParameter("end",period.getEndDate()).setParameter("type",type.getName());
-            }
-
-            //If everything is null
-            else if(state == null && type == null && period == null)
-            {
-                throw new InvalidRequestException();
-            }
-            //state, type and period are all not null
-            else
-            {
-                query= entitymanager.createQuery( "SELECT b.publicationType.accreditationPoints AS UNITS, b.title AS REPORT_TITLE, " +
-                        " b.publicationType.name AS REPORT_TYPE, b.lifeCycleState.lifeCycleState AS STATE " +
-                        "FROM  Publication b WHERE b.publicationType.name = :type " +
-                        "AND b.lifeCycleState.lifeCycleState = :state " +
-                        "AND b.envisagedPublicationDate BETWEEN  :start" +
-                        " AND  + :end").setParameter("state", state.getLifeCycleState()).setParameter("type", type.getName()).setParameter("start",period.getStartDate()).setParameter("end", period.getEndDate());
-            }
-
-        }
-        return query;
+           }        
     
     }
     
