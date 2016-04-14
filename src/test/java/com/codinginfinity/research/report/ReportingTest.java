@@ -47,7 +47,8 @@ import static org.junit.Assert.assertTrue;
 public class ReportingTest {
 
     /**
-     *
+     * This is a test for testing the pre-condition of the getAccreditationUnitReport service contract.
+     * It is expected to throw an exception.
      * @throws Exception
      */
     @Test(expected = InvalidRequestException.class)
@@ -57,7 +58,7 @@ public class ReportingTest {
     }
 
     /**
-     *
+     * This is a test for testing the getAccreditationUnitReport service contract with pre-defined mock object.
      * @throws Exception
      */
     @Test
@@ -73,7 +74,8 @@ public class ReportingTest {
     }
 
     /**
-     * 
+     * This is a test for testing the pre-condition of the GetProgressReportRequest service contract.
+     * It is expected to throw an exception.
      * @throws Exception 
      */
     @Test(expected = InvalidRequestException.class)
@@ -83,7 +85,7 @@ public class ReportingTest {
     }
     
     /**
-     * 
+     * This is a test for testing the GetProgressReportRequest service contract with pre-defined mock object.
      * @throws Exception 
      */
     @Test
@@ -128,6 +130,10 @@ public class ReportingTest {
     private EntityManager entitymanager;
     private EntityManagerFactory emfactory;
     
+    /**
+     * This function initializes the mock objects and establishes the connection to the database.
+     * It also populates mock/test database.
+     */
     @Before
     public void populateDatabase() 
     {
@@ -531,7 +537,10 @@ public class ReportingTest {
 
       entitymanager.getTransaction().commit();
     }
-
+    
+    /**
+     * This function closes the mock/test database.
+     */
     @After
     public void closeManager() 
     {
