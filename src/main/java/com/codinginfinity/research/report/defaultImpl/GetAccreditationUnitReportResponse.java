@@ -98,7 +98,7 @@ public class GetAccreditationUnitReportResponse implements Response
      */
     public boolean getHTML(){
         try{
-            JasperExportManager.exportReportToHtmlFile(print, "AccreditationUnitReport.xml");
+            JasperExportManager.exportReportToHtmlFile(print, "AccreditationUnitReport.html");
 
         }
         catch( JRException e){
